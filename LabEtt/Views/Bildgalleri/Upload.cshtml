@@ -1,0 +1,17 @@
+﻿@model LabEtt.Models.PhotoViewModel
+@{
+    ViewBag.Title = "Ladda upp en ny bild";
+}
+<h3>Ladda upp en ny bild</h3>
+
+@using (Html.BeginForm("Upload", "Bildgalleri", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+        @Html.ValidationMessage("error")
+    </div>
+    @Html.TextBoxFor(p => p.PhotoName,new {@class="form-control", placeholder="Photo Name"})
+    @Html.TextBoxFor(p=>p.Description,new {@class="form-control",placeholder="Description"})
+    <input type="file" name="file" />
+    <input type="submit" value="Ladda upp" />
+}
+<div id="result"></div>

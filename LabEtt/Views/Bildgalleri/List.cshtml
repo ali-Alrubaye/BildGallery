@@ -1,0 +1,47 @@
+﻿
+@model IList<Datalager.Models.Photo>
+
+@{
+    ViewBag.Title = $"Vi har {Model.Count} bilder i vår lista";
+}
+
+<h3>Nu tittar vi på en lista av bilder!</h3>
+@Html.ActionLink("Upload", "Upload")
+<div class="">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+
+            <div class="col-lg-4 col-sm-6">
+                <div class="photo">
+                    <div class="thumbnail">
+                        <h4>Photo Name: @item.PhotoName</h4>
+
+                        <img src="@Url.Content("~/GalleryFolder/" + @item.PhotoPath)" alt="Kan int hita bilden" width="300" height="300">
+                        <div>Description: @item.PhotoComment</div>
+                        <div>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.PhotoId })
+                            @Html.ActionLink("Details", "Details", new { id = item.PhotoId })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.PhotoId })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix visible-lg"></div>
+
+        }
+    </div>
+
+</div>
+            @section latest{
+                <h3>Latest uploaded Picture</h3>
+                @foreach (var result in Model)
+                {
+                    if (Model.IndexOf(result) == Model.Count - 1)
+                    {
+                        // this is the last item
+                        <img src="@Url.Content("~/GalleryFolder/" + @result.PhotoPath)" alt="Kan int hita bilden" width="300" height="300">
+                    }
+                }
+            }
+       
