@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Datalager.Models;
+using LabEtt.Models;
 using Microsoft.AspNet.Identity;
 
 namespace LabEtt.Controllers
@@ -29,9 +30,9 @@ namespace LabEtt.Controllers
         // GET: Authentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(string username, string password)
+        public ActionResult Login(LoginViewModel model)
         {
-            var user = ListUser.FirstOrDefault(x => x.UserN == username && x.Pwd == password);
+            var user = ListUser.FirstOrDefault(x => x.UserN == model.UserN && x.Pwd == model.Pwd);
 
             if (user == null) return View();
 
@@ -49,7 +50,9 @@ namespace LabEtt.Controllers
                     return RedirectToAction("Index", "User", new { area = "User" });
                 }
             }
-            //ModelState.AddModelError("", "Invalid email or passsword");
+/*
+            ModelState.AddModelError("", "Invalid email or passsword");
+*/
             return RedirectToAction("Index", "Home");
         }
 
