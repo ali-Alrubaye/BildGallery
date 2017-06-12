@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Datalager.Models;
+using Datalager.Repositories;
 using LabEtt.Models;
 using Microsoft.AspNet.Identity;
 
@@ -14,12 +15,16 @@ namespace LabEtt.Controllers
 {
     public class AuthenticationController : Controller
     {
-
-        List<AppUser> ListUser = new List<AppUser>
+        public PhotoRepository PhotoRepository { get; set; }
+        public AuthenticationController()
         {
-            new AppUser { IsAdministrator = true,Id = new Guid(), Email = "Admin@admin.com", UserN = "Admin", Pwd = "Admin@123"},
-            new AppUser { IsAdministrator = false,Id = new Guid(), Email = "User1@user.com", UserN = "User1", Pwd = "Admin@123"}
-        };
+            PhotoRepository = new PhotoRepository();
+        }
+        //List<AppUser> ListUser = new List<AppUser>
+        //{
+        //    new AppUser { IsAdministrator = true,Id = new Guid(), Email = "Admin@admin.com", UserN = "Admin", Pwd = "Admin@123"},
+        //    new AppUser { IsAdministrator = false,Id = new Guid(), Email = "User1@user.com", UserN = "User1", Pwd = "Admin@123"}
+        //};
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -30,9 +35,9 @@ namespace LabEtt.Controllers
         // GET: Authentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel model)
+        public ActionResult Login(AppUserViewModel model)
         {
-            var user = ListUser.FirstOrDefault(x => x.UserN == model.UserN && x.Pwd == model.Pwd);
+            var user = PhotoRepository.Users.FirstOrDefault(x => x.UserN == model.UserN && x.Pwd == model.Pwd);
 
             if (user == null) return View();
 
@@ -85,7 +90,7 @@ namespace LabEtt.Controllers
                 Pwd = password
             };
 
-            ListUser.Add(user);
+            PhotoRepository.Users.Add(user);
 
         
             return RedirectToAction("Index", "Home");

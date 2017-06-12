@@ -6,7 +6,7 @@ using System.Web;
 
 namespace LabEtt.Models
 {
-    public class LoginViewModel
+    public class AppUserViewModel
     {
         public bool IsAdministrator { get; set; }
         public Guid Id { get; set; }

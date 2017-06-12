@@ -14,10 +14,9 @@ namespace Datalager.Models
         public string PhotoName { get; set; }
 
         public DateTime PhotoDate { get; set; }
-        public string PhotoComment { get; set; }
+        public string Description { get; set; }
         public string PhotoPath { get; set; }
-        public Guid AlbumId { get; set; }
-        public virtual Album Album { get; set; }
+      
 
     }
 }

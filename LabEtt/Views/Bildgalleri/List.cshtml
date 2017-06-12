@@ -20,7 +20,7 @@
                         <h4>Photo Name: @item.PhotoName</h4>
 
                         <img src="@Url.Content("~/GalleryFolder/" + @item.PhotoPath)" alt="Kan int hita bilden" width="300" height="300">
-                        <div>Description: @item.PhotoComment</div>
+                        <div>Description: @item.Description</div>
                         <div>
                             @Html.ActionLink("Edit", "Edit", new { id = item.PhotoId })
                             @Html.ActionLink("Details", "Details", new { id = item.PhotoId })

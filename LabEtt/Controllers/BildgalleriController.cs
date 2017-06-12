@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Datalager.Models;
 using Datalager.Repositories;
+using LabEtt.Mapper;
 using LabEtt.Models;
 
 namespace LabEtt.Controllers
@@ -73,35 +74,42 @@ namespace LabEtt.Controllers
                 PhotoId = Guid.NewGuid(),
                 PhotoPath = file.FileName,
                 PhotoName = addGallery.PhotoName,
-                PhotoComment= addGallery.Description
+                Description= addGallery.Description
             };
             PhotoRepository.Add(photo);
             return RedirectToAction("List");
         }
+        [HttpGet]
         public ActionResult List()
         {
 
             return View(PhotoRepository.Photos);
         }
         // GET: Gallery/Edit/5
+        [HttpGet]
         public ActionResult Edit(Guid id)
         {
-            var E = PhotoRepository.Photos.Where(p => p.PhotoId == id).FirstOrDefault();
-            return View(E);
+            var E = PhotoRepository.Photos.FirstOrDefault(c=> c.PhotoId == id);
+           
+            var rr= PhotoMapper.MapDetailsPhotoView(E);
+            return View(rr);
         }
 
         // POST: Gallery/Edit/5
         [HttpPost]
-        public ActionResult Edit(Guid id, Photo EG)
+        
+        public ActionResult Edit(Guid id, PhotoViewModel EG)
         {
             try
             {
-                var E = PhotoRepository.Photos.Where(p => p.PhotoId == id).FirstOrDefault();
-                E.PhotoId = EG.PhotoId;
+                var E = PhotoRepository.Photos.FirstOrDefault(p => p.PhotoId == id);
+                E.PhotoId = EG.Id;
                 E.PhotoName = EG.PhotoName;
+                E.PhotoDate = EG.PhotoDate;
                 E.PhotoPath = EG.PhotoPath;
+                
 
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
             catch
             {
@@ -115,7 +123,7 @@ namespace LabEtt.Controllers
             //var D =  PhotoRepository.Photos.Where(d => d.ID == id).FirstOrDefault();
             PhotoRepository.Remove(id);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("List");
         }
 
         // POST: Gallery/Delete/5
@@ -165,7 +173,7 @@ namespace LabEtt.Controllers
                     PhotoId = new Guid(),
                     PhotoName = infoa.Name,
                     PhotoPath = $"/GalleryFolder/{infoa.Name}",
-                    PhotoComment = "New Photo"
+                    Description = "New Photo"
 
                 });
 
