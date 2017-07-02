@@ -1,0 +1,51 @@
+﻿@*@model IEnumerable<ViewModels.Models.PhotoViewModel>*@
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="jumbotron">
+    
+</div>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="CreateNPhoto()">
+    Add New Photo
+</button>
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="CreateNAlbum()">
+    Add New Album
+</button>*@
+<div id="load" style="visibility: hidden">
+    <img src="~/Load/loading-dark-mint-gradient.gif"/>
+</div>
+
+<!--Show Photos-->
+<div class="container" id="theTable">
+    <div class="row">
+        <div class="ShowList">
+            @*@Html.Partial("_list")*@
+
+        
+        </div>
+    </div>
+</div>
+
+<!--Modal-->
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
+    <div class="modal-dialog modalAccountEdit" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div id="notify" style="text-align: left; color: red">
+
+                </div>
+                @*<h3><strong>Edit Account Profile - <span class="accountname"></span></strong></h3>*@
+            </div>
+
+            <div class="modal-body">
+                <div id="formContant">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>

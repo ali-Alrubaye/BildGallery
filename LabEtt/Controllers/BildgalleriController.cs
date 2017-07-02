@@ -12,6 +12,7 @@ using LabEtt.Models;
 
 namespace LabEtt.Controllers
 {
+   
     public class BildgalleriController : Controller
     {
         public PhotoRepository PhotoRepository { get; set; }
@@ -19,13 +20,14 @@ namespace LabEtt.Controllers
         {
             PhotoRepository = new PhotoRepository();
         }
+        [AllowAnonymous]
         // GET: Gallery
         public ActionResult Index()
         {
 
             return View();
         }
-
+        [Authorize]
         // GET: Gallery/Details/5
         public ActionResult Details(Guid? id)
         {
@@ -42,12 +44,14 @@ namespace LabEtt.Controllers
         }
 
         //GET 
+        [Authorize]
         [HttpGet]
         public ActionResult Upload()
         {
             return View("Index");
         }
         // POST: Gallery/Create
+        [Authorize]
         [HttpPost]
         public ActionResult Upload(PhotoViewModel addGallery, HttpPostedFileBase file)
         {
@@ -86,6 +90,7 @@ namespace LabEtt.Controllers
             return View(PhotoRepository.Photos);
         }
         // GET: Gallery/Edit/5
+        [Authorize]
         [HttpGet]
         public ActionResult Edit(Guid id)
         {
@@ -96,8 +101,8 @@ namespace LabEtt.Controllers
         }
 
         // POST: Gallery/Edit/5
-        [HttpPost]
-        
+        [Authorize]
+        [HttpPost]        
         public ActionResult Edit(Guid id, PhotoViewModel EG)
         {
             try
@@ -118,6 +123,7 @@ namespace LabEtt.Controllers
         }
 
         // GET: Gallery/Delete/5
+        [Authorize]
         public ActionResult Delete(Guid id)
         {
             //var D =  PhotoRepository.Photos.Where(d => d.ID == id).FirstOrDefault();

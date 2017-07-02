@@ -8,6 +8,7 @@ namespace LabEtt.Areas.User.Controllers
 {
     public class UserController : Controller
     {
+        [Authorize(Roles = "User")]
         // GET: User/User
         public ActionResult Index()
         {

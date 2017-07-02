@@ -1,0 +1,46 @@
+﻿/*body {
+  padding-top: 50px;
+}*/
+ 
+.thumbnail {
+    position:relative;
+    overflow:hidden;
+    width: 100%;
+    height: 300px;
+}
+ 
+.caption {
+    position:absolute;
+    top:0;
+    right:0;
+    background:rgba(90, 90, 90, 0.75);
+    width:100%;
+    height:100%;
+    padding:2%;
+    display: none;
+    text-align: left;
+    color:#fff !important;
+    z-index:2;
+}
+/*.editbtn .deletebtn {
+      position:absolute;
+    top:0;
+    right:0;
+    background:rgba(90, 90, 90, 0.75);
+    width:100%;
+    height:100%;
+    padding:2%;
+    display: none;
+    text-align: left;
+    color:#fff !important;
+    z-index:2;
+}*/
+/*#Description {
+    height: 200px !important;
+    width: 100%  !important;
+    color: red;*/
+
+}
+#modalImg {
+    text-align: center;
+}

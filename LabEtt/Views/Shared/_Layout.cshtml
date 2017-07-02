@@ -30,14 +30,15 @@
         </div>
     </div>
 
-    <div class="container body-content">
-        @RenderBody()
-        @RenderSection("latest", required: false)
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+<div class="container body-content">
+  
+    @RenderBody()
+    @RenderSection("latest", required: false)
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
+</div>
 
     <script src="~/Scripts/jquery-3.1.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>

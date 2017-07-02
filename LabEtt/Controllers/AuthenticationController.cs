@@ -52,7 +52,8 @@ namespace LabEtt.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Index", "User", new { area = "User" });
+                    //return RedirectToAction("Index", "User", new { area = "User" });
+                    return RedirectToAction("List", "Bildgalleri");
                 }
             }
 /*
