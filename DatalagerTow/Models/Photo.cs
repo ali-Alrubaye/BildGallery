@@ -9,7 +9,7 @@ namespace DatalagerTow.Models
         public Photo()
         {
             Comments = new HashSet<Comment>();
-            PhotoId = Guid.NewGuid();
+          
         }
 
 

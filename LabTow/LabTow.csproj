@@ -219,6 +219,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="GalleryImages\img01.jpg" />
     <Content Include="GalleryImages\img02.jpg" />
@@ -236,22 +237,30 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Load\01-progress.gif" />
+    <Content Include="Load\4c4ySEG.gif" />
     <Content Include="Load\loading-dark-mint-gradient.gif" />
+    <Content Include="Load\loading_logofinal.gif" />
     <Content Include="Load\windows7folder.png" />
+    <Content Include="myScript\albGet.js" />
+    <Content Include="myScript\AlbPost.js" />
     <Content Include="myScript\Img.css" />
     <Content Include="myScript\ImgGet.js" />
     <Content Include="myScript\ImgPost.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.form.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -269,7 +278,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AlbumController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PhotoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -285,8 +297,6 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\Authentication\Register.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -298,6 +308,19 @@
     <Content Include="Views\Photo\_Delete.cshtml" />
     <Content Include="Views\Photo\_Edit.cshtml" />
     <Content Include="Views\Photo\_list.cshtml" />
+    <Content Include="Views\Photo\_Details.cshtml" />
+    <Content Include="Views\Album\Index.cshtml" />
+    <Content Include="Views\Album\_AddCom.cshtml" />
+    <Content Include="Views\Album\_CreateAlbum.cshtml" />
+    <Content Include="Views\Album\_Delete.cshtml" />
+    <Content Include="Views\Album\_Edit.cshtml" />
+    <Content Include="Views\Album\_List.cshtml" />
+    <Content Include="Views\Album\_DetailsAlbum.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Album\Details.cshtml" />
+    <Content Include="Views\Comment\_list.cshtml" />
+    <Content Include="Views\Comment\Index.cshtml" />
+    <Content Include="Views\Comment\_CreateComment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,49 @@
+﻿@model BusinessLayer.Models.AlbumViewModel
+
+@using (Html.BeginForm("Create", "Album", FormMethod.Post, new { id = "myFormAlbum" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>Add New Album</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumName, new { htmlAttributes = new { @id = "txtName", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AlbumName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumDate, new { htmlAttributes = new { @id = "txtDate", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AlbumDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "txtDesc", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                <button type="submit" id="btnSaveAlbumC" name="btnSaveAlbumC" value="Create" class="btn btn-primary" style="margin-left:5px;">Create</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+        @*<div>
+                @Html.ValidationMessage("error")
+            </div>*@
+    </div>
+}
+
+@Scripts.Render("~/myScript/GallerSecript")
+
+

@@ -14,13 +14,11 @@ namespace LabTow
             //            "~/Scripts/jquery-migrate-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                       "~/Scripts/jquery.validate.js",
-                       "~/Scripts/jquery.validate.unobtrusive.js"));
+                       "~/Scripts/jquery.validate.min.js",
+                       "~/Scripts/jquery.validate.unobtrusive.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryunobtrusive").Include(
-               "~/Scripts/jquery.unobtrusive-ajax.js"));
-            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
-                "~/Scripts/jquery.jquery-ui-{version}.js"));
+               "~/Scripts/jquery.unobtrusive-ajax.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui")
              .Include("~/Scripts/jquery-ui-{version}.js"));
@@ -31,7 +29,9 @@ namespace LabTow
                         "~/Scripts/modernizr-*"));
             bundles.Add(new ScriptBundle("~/myScript/GallerSecript").Include(
                       "~/myScript/ImgPost.js",
-                      "~/myScript/ImgGet.js"
+                      "~/myScript/ImgGet.js",
+                       "~/myScript/AlbGet.js",
+                        "~/myScript/AlbPost.js"
                       ));
             //"~/myScript/AlbPost.js",
             //           "~/myScript/albumGet.js"

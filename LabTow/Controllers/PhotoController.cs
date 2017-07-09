@@ -27,7 +27,6 @@ namespace LabTow.Controllers
         // GET: /photo/
         public ActionResult Index()
         {
-            var p = _photoAutomapper.FromBltoUiGetAll().OrderBy(x => x.PhotoDate);
             return View();
         }
 
@@ -35,20 +34,21 @@ namespace LabTow.Controllers
         public ActionResult List()
         {
             var p = _photoAutomapper.FromBltoUiGetAll().OrderBy(x => x.PhotoDate);
-            
+
             return PartialView("_list", p);
         }
 
         //
         // GET: /photo/Details/5
+        [HttpGet]
         public ActionResult Details(Guid id)
         {
-            var r =  _photoAutomapper.FromBltoUiGetById(id);
+            var r = _photoAutomapper.FromBltoUiGetById(id);
             if (r == null)
             {
                 return HttpNotFound();
             }
-            return View(r);
+            return PartialView("_Details", r);
         }
 
         //
@@ -59,13 +59,14 @@ namespace LabTow.Controllers
             ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderByDescending(x => x.AlbumId), "AlbumId", "AlbumName");
             return PartialView("_CreatePhotos");
         }
-
         //
         // POST: /photo/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PhotoID,PhotoName,PhotoDate,Description,PhotoPath,AlbumId")] PhotoViewModel photo, HttpPostedFileBase photoPath)
+        public ActionResult Create(PhotoViewModel photo, HttpPostedFileBase photoPath)
         {
+            //Thread.Sleep(5000);
+
             if (string.IsNullOrWhiteSpace(photo.PhotoName))
             {
                 return Json(new { status = 0, Message = "Namnet får inte vara tomt!" }, JsonRequestBehavior.AllowGet);
@@ -74,20 +75,30 @@ namespace LabTow.Controllers
             {
                 return Json(new { status = 0, Message = "Description får inte vara tomt!" }, JsonRequestBehavior.AllowGet);
             }
-            if (photoPath == null || photoPath.ContentLength == 0)
-            {
-                return Json(new { status = 0, Message = "En fil vill jag gärna att du laddar upp!" }, JsonRequestBehavior.AllowGet);
-            }
             var destination = Server.MapPath("~/GalleryImages/");
             if (!Directory.Exists(destination))
             {
                 Directory.CreateDirectory(destination);
             }
+            if (photoPath == null || photoPath.ContentLength == 0)
+            {
+                return Json(new { Status = 0, Message = "En fil vill jag gärna att du laddar upp!" }, JsonRequestBehavior.AllowGet);
+            }
+            var fileName = Path.GetFileName(photoPath.FileName);
+            if (fileName != null)
+            {
+                var path = Path.Combine(destination, fileName);
+                photoPath.SaveAs(path);
+            }
+
+
             photo.PhotoPath = photoPath.FileName;
             photo.PhotoId = Guid.NewGuid();
             photo.PhotoDate = DateTime.UtcNow;
             _photoAutomapper.FromBltoUiInser(photo);
-            ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId), "AlbumId", "AlbumName");
+
+            ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId), "AlbumId", "AlbumName");
+
             return Json(new { status = 1, Message = "Added Photo Success" });
         }
 
@@ -96,9 +107,9 @@ namespace LabTow.Controllers
         [HttpGet]
         public ActionResult Edit(Guid id)
         {
-            ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == id), "AlbumId", "AlbumName");
-            var editMap =  _photoAutomapper.FromBltoUiGetById(id);
 
+            var editMap = _photoAutomapper.FromBltoUiGetById(id);
+            ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == editMap.AlbumId), "AlbumId", "AlbumName");
             if (editMap == null)
             {
                 return HttpNotFound();
@@ -106,27 +117,42 @@ namespace LabTow.Controllers
             return PartialView("_Edit", editMap);
         }
 
+
         //
         // POST: /photo/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(PhotoViewModel photo)
+        public ActionResult Edit(PhotoViewModel photo, HttpPostedFileBase photoPath)
         {
+            var destination = Server.MapPath("~/GalleryImages/");
+            if (photoPath != null && photoPath.ContentLength > 0)
+            {
+                var path = Path.Combine(destination, photoPath.FileName);
+                photoPath.SaveAs(path);
+                photo.PhotoPath = photoPath.FileName;
+
+                photo.PhotoDate = DateTime.UtcNow;
+                RemoveOldFileIfExists(photo);
+
+
+            }
             if (ModelState.IsValid)
             {
-                 _photoAutomapper.FromBltoUiEditAsync(photo);
+                _photoAutomapper.FromBltoUiEditAsync(photo);
                 ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId), "AlbumId", "AlbumName");
-                return RedirectToAction("Index");
+                return Json(new { status = 1, Message = "Edit Photo Success" });
             }
 
-            return RedirectToAction("List");
+            return Json(new { status = 1, Message = "Cannot Edit Photo" });
         }
 
         //
         // GET: /photo/Delete/5
+        [HttpGet]
         public ActionResult Delete(Guid id)
         {
-            var getFromR =  _photoAutomapper.FromBltoUiGetById(id);
+
+            var getFromR = _photoAutomapper.FromBltoUiGetById(id);
             if (getFromR == null)
             {
                 return HttpNotFound();
@@ -137,11 +163,34 @@ namespace LabTow.Controllers
         //
         // POST: /photo/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-             _photoAutomapper.FromBltoUiDeleteAsync(id);
+          
+            var deletpicture = _photoAutomapper.FromBltoUiGetById(id);
+            var destination = Server.MapPath("~/GalleryImages/" + deletpicture.PhotoPath);
+            if (deletpicture.PhotoPath != null)
+            {
+                FileInfo file = new FileInfo(destination);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+            }
+            _photoAutomapper.FromBltoUiDeleteAsync(id);
             return Json(new { Message = "Delete Photo Success" }, JsonRequestBehavior.AllowGet);
+        }
+        private void RemoveOldFileIfExists(PhotoViewModel picture)
+        {
+            var oldpicture = _photoAutomapper.FromBltoUiGetById(picture.PhotoId);
+            if (oldpicture.PhotoPath != picture.PhotoPath)
+            {
+                var oldPhysicalPath = Request.MapPath(oldpicture.PhotoPath);
+                FileInfo oldfile = new FileInfo(oldPhysicalPath);
+                if (oldfile.Exists)
+                {
+                    oldfile.Delete();
+                }
+            }
         }
     }
 }

@@ -1,41 +1,42 @@
 ﻿$(document).ready(function () {
 
-    showing();
+    showingAlb();
 });
 
 function close() {
-    displayList();
+    displayListAlb();
 }
-function showing() {
-    //Start Function Upload Photo to Index View.........
-    //debugger;
+function showingAlb() {
+    //Start Function Upload Album to Index View.........
     $.ajax({
-        url: "/Photo/List",
+        url: "/Album/List",
         method: 'GET',
         cash: false,
-        async: false,
-        //dataType: 'html',
+        dataType: 'html',
         success: function (data) {
-            $(".ShowList").html(data);
-            //Call Function to display photos in Index View.......
-            displayList();
+            $('#addAlbumbtn').show();
+            $(".ShowListAlbum").html(data);
+            //Call Function to display Albums in Index View.......
+            displayListAlb();
         }
         //})
     });
 }
+function showAlbDetails(id) {
+    //Start Function Show Album Details to Index View.........
+    //debugger;
 
-//Function to Show add new Photo .. Show in Poppup Modal....
-function CreateNPhoto() {
+    location.href = "/Album/Details?id=" + id;
+
+}
+//Function to Show add new Album .. Show in Poppup Modal....
+function CreateNAlbum() {
     $(".modal-body").removeAttr('id');
     $(".modal-body").attr('id', 'showCreate');
-    //$(".btnSave").attr('id', 'btnSavePhotoC');
-    //$('.btnSave').html('');
-    //$('.btnSave').html('Create');
     var div = $("#showCreate");
-    //div.load("/Photo/Create");
 
     $.ajax({
-        url: "/Photo/Create",
+        url: "/Album/Create",
         method: "GET",
         dataType: 'html',
         success: function (data) {
@@ -43,17 +44,17 @@ function CreateNPhoto() {
         }
     });
 }
-//Function to Add Comment to Photo .. Show in Poppup Modal....
-function AddCommenttoPhoto(id) {
+//Function to Add Comment to Album .. Show in Poppup Modal....
+function AddCommenttoAlb(id) {
     $(".modal-body").removeAttr('id');
     $(".modal-body").attr('id', 'addComment');
-    //$(".btnSave").attr('id', 'AddCommentPhoto');
+    //$(".btnSave").attr('id', 'AddCommentAlbum');
     //$('.btnSave').html('');
     // $('.btnSave').html('Add');
     var div = $("#addComment");
-    //div.load("/Photo/Edit?photoIdGuid=" + id);
+    //div.load("/Home/Edit?AlbumIdGuid=" + id);
     $.ajax({
-        url: "/Photo/AddCom?id=" + id,
+        url: "/Album/AddCom?id=" + id,
         method: 'GET',
         dataType: 'html',
         success: function (data) {
@@ -61,13 +62,13 @@ function AddCommenttoPhoto(id) {
         }
     });
 }
-//Function to Show Edit Photo .. Show in Poppup Modal....
-function EditPhoto(id) {
+//Function to Show Edit Album .. Show in Poppup Modal....
+function EditAlb(id) {
     $(".modal-body").removeAttr('id');
     $(".modal-body").attr('id', 'showEdit');
     var div = $("#showEdit");
     $.ajax({
-        url: "/Photo/Edit?id=" + id,
+        url: "/Album/Edit?id=" + id,
         method: 'GET',
         dataType: 'html',
         success: function (data) {
@@ -76,31 +77,17 @@ function EditPhoto(id) {
     });
 }
 
-//Function to Show Edit Photo .. Show in Poppup Modal....
-function DetailsPhoto(id) {
-    $(".modal-body").removeAttr('id');
-    $(".modal-body").attr('id', 'showDetails');
-    var div = $("#showDetails");
-    $.ajax({
-        url: "/Photo/Details?id=" + id,
-        method: 'GET',
-        dataType: 'html',
-        success: function (data) {
-            div.html(data);
-        }
-    });
-}
-//Function to Show Delete Photo .. Show in Poppup Modal....
-function DeletePhoto(id) {
+//Function to Show Delete Album .. Show in Poppup Modal....
+function DeleteAlb(id) {
 
     $(".modal-body").removeAttr('id');
     $(".modal-body").attr('id', 'showDelete');
     //$(".btnSave").attr('id', 'btnDelete');
     //$('.btnSave').html('Delete');
     var div = $("#showDelete");
-    //div.load("/Photo/Delete?id=" + id);
+    //div.load("/Home/Delete?id=" + id);
     $.ajax({
-        url: "/Photo/Delete?id=" + id,
+        url: "/Album/Delete?id=" + id,
         method: 'GET',
         dataType: 'html',
         success: function (data) {
@@ -108,12 +95,12 @@ function DeletePhoto(id) {
         }
     });
 }
-function displayList() {
+function displayListAlb() {
     //setTimeout(function () {
     //debugger;
     $("[rel='tooltip']").tooltip();
 
-    $('.thumbnail').hover(
+    $('.albums').hover(
         function () {
             $(this).find('.caption').slideDown(250); //.fadeIn(250)
         },

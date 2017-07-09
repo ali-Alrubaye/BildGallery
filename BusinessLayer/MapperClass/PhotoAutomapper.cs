@@ -18,7 +18,12 @@ namespace BusinessLayer.MapperClass
             var randomPhoto = Mapper.Map<List<Photo>, List<PhotoViewModel>>(getData);
             return randomPhoto;
         }
-
+        public List<PhotoViewModel> FromBltoUiGetAllByAlbumId(Guid id)
+        {
+            var getData = _photoRepository.GetPhotoByAlbumId(id).ToList();
+            var randomPhoto = Mapper.Map<List<Photo>, List<PhotoViewModel>>(getData);
+            return randomPhoto;
+        }
         public PhotoViewModel FromBltoUiGetById(Guid id)
         {
             var getRepo = _photoRepository.GetByIdAsync(id);

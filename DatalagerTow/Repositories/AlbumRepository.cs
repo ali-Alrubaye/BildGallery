@@ -24,7 +24,9 @@ namespace DatalagerTow.Repositories
         {
             UserRepositories user = new UserRepositories();
             var u = user.GetAll();
-
+            //PhotoRepository photo = new PhotoRepository();
+            //var a1 = photo.GetPhotoByAlbumId1();
+            //var a2 = photo.GetPhotoByAlbumId2();
             Albums = new List<Album>
             {
 
@@ -52,7 +54,13 @@ namespace DatalagerTow.Repositories
 
         public void EditAsync(Album album)
         {
-            throw new NotImplementedException();
+            var ph = Albums.FirstOrDefault(x => x.AlbumId == album.AlbumId);
+            var results = (from i in Albums
+                           where i.AlbumId == album.AlbumId //here you put your predicate
+                           select Albums.IndexOf(i)).FirstOrDefault();
+
+            Albums.Remove(ph);
+            Albums.Insert(results, album);
         }
 
         public void InsertAsync(Album album)
