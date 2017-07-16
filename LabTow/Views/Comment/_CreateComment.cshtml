@@ -1,1 +1,47 @@
-﻿<h2>Create Comment</h2>
+﻿@model BusinessLayer.Models.CommentViewModel
+
+@*@if (User.Identity.IsAuthenticated)
+{*@
+@using (Html.BeginForm("CreateComment", "Comment", FormMethod.Post, new { @id = "mycommform", @class = "form-horizontal" }))
+{
+ 
+    <div class="form-horizontal">
+        <h3>Post comment</h3>
+        @*@Html.AntiForgeryToken()*@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(m => m.AlbumId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumCView.AlbumName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumCView.AlbumName, new { htmlAttributes = new { @id = "txtName", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AlbumCView.AlbumName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Content, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Content, 5, 50, new {htmlAttributes = new {@id = "CommentCon", @class = "form-control", style = "resize: none;"}})
+                @Html.ValidationMessageFor(model => model.Content, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.AlbumCView.AlbumName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumCView.AlbumName, new { htmlAttributes = new { @id = "CommentCon", @class = "form-control", style = "resize: none;" } })
+                @Html.ValidationMessageFor(model => model.AlbumCView.AlbumName, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                <button type="submit" id="AddCommAlbum"  value="Add Comment" class="btn btn-primary" style="margin-left:5px;">Add Comment</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+}
+    //}
+@Scripts.Render("~/myScript/GallerSecript")

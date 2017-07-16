@@ -9,22 +9,26 @@ using BusinessLayer.Models;
 
 namespace LabTow.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
-        //private AlbumAutomapper AlbumAutomapper { get; set; }
+        private AlbumAutomapper AlbumAutomapper { get; set; }
         //private PhotoAutomapper PhotoAutomapper { get; set; }
         private CommentAutomapper CommentAutomapper { get; set; }
 
         public CommentController()
         {
+            AlbumAutomapper = new AlbumAutomapper();
             CommentAutomapper = new CommentAutomapper();
         }
+        [AllowAnonymous]
         // GET: Comment
         public ActionResult Index()
         {
 
             return View();
         }
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult List()
         {
@@ -34,34 +38,55 @@ namespace LabTow.Controllers
         //
         // GET: /Comment/Create
         [HttpGet]
-        public PartialViewResult Create()
+        public PartialViewResult CreateComment(Guid id)
         {
-
-            return PartialView("_CreateComment");
+            var newComm = new CommentViewModel();
+            var alb = AlbumAutomapper.FromBltoUiGetById(id);
+            newComm.AlbumId = id;
+            newComm.AlbumCView = alb;
+            return PartialView("_CreateComment", newComm);
         }
 
         //
         // POST: /Comment/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(CommentViewModel com)
+        //[ValidateAntiForgeryToken]
+        public ActionResult CreateComment(CommentViewModel com)
         {
             //if (User.Identity.IsAuthenticated)
             //{
-            //    var identity = (ClaimsIdentity)User.Identity;
-            //    var usId = CommentAutomapper.FromBltoUiGetById(com.UserId);
-            //    //int? userID = int.Parse(Helpers.GetSid(identity));
-            //    if (usId != null)
-            //    {
-            //        com.Date = DateTime.Now;
-            //        com.UserId = Guid.NewGuid();
+            var identity = (ClaimsIdentity)User.Identity;
+            var usId = CommentAutomapper.FromBltoUiGetById(com.UserId);
+            
+            //if (usId != null)
+            //{
+            com.Date = DateTime.Now;
+            com.UserId = Guid.NewGuid();
+            com.AlbumId = com.AlbumId;
 
-            //        var entity = EntityModelMapper.ModelToEntity(model);
-            //        repo.AddOrUpdate(entity);
-            //    }
-            //    return RedirectToAction("Index", "Gallery");
-            //}
+            CommentAutomapper.FromBltoUiInser(com);
             return Json(new { status = 1, Message = "Added Comment Success" });
+            //}
+
+            //}
+            //return Json(new { status = 1, Message = "Couldn't add comment" });
+        }
+        [HttpPost]
+        public ActionResult Delete(Guid commentID)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                    var commentToRemove = CommentAutomapper.FromBltoUiGetById(commentID);
+                    if (commentToRemove != null)
+                    {
+                    CommentAutomapper.FromBltoUiDeleteAsync(commentID);
+                    }
+                    return Content("Comment was removed.");
+                }
+
+            
+            return Content("Couldn't remove comment.");
         }
     }
 }

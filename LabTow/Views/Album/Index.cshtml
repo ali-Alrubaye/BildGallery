@@ -4,9 +4,9 @@
 
 </div>
 <!-- Button trigger modal -->
-@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="CreateNPhoto()">
+<button type="button" id="addPhotobtn" class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="CreateNPhoto()">
     Add New Photo
-</button>*@
+</button>
 <button type="button" id="addAlbumbtn" class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="CreateNAlbum()">
     Add New Album
 </button>
@@ -14,16 +14,17 @@
 <!--Show Albums-->
 <div class="container" id="theTable2">
     <div class="row">
-        <div class="ShowListAlbum">
-            @*@Html.Partial("_list")*@
+        <div id="loading" style="width: 100%; height: 100%; text-align: center;display:none">
 
-
+            <img src="~/Load/loading_logofinal.gif" />
         </div>
+        <div class="ShowListAlbum"></div>
+        <div class="ShowListPhoto"></div>
     </div>
 </div>
 <!--Modal-->
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
-    <div class="modal-dialog modalAlbum" role="document">
+    <div class="modal-dialog modal-lg modalAlbum" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

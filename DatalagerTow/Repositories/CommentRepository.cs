@@ -11,35 +11,15 @@ namespace DatalagerTow.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
-        // Spara i minnet tills vi flyttar till en databas
-        public static IList<Comment> Comments { get; private set; } = new List<Comment>();
         public CommentRepository()
         {
             if (!Comments.Any())
-            {
                 SetupTemporaryUserData();
-            }
         }
 
-        private void SetupTemporaryUserData()
-        {
-            UserRepositories user= new UserRepositories();
-            var u = user.GetAll();
-            
-            PhotoRepository photo = new PhotoRepository();
-            var p = photo.GetAll();
-            AlbumRepository album= new AlbumRepository();
-            var a = album.GetAll();
-            Comments = new List<Comment>
-            {
+        // Spara i minnet tills vi flyttar till en databas
+        public static IList<Comment> Comments { get; private set; } = new List<Comment>();
 
-             new Comment {Id=Guid.NewGuid(),Content="Album01",Date = DateTime.UtcNow, UserId=u[0].Id  ,PhotoId =null ,AlbumId=a[0].AlbumId},
-             new Comment {Id=Guid.NewGuid(),Content="img01",Date = DateTime.UtcNow, UserId =u[1].Id ,PhotoId =p[0].PhotoId ,AlbumId=null},
-             new Comment {Id=Guid.NewGuid(),Content="Album02",Date = DateTime.UtcNow, UserId =u[0].Id ,PhotoId =null ,AlbumId=a[1].AlbumId},
-             new Comment {Id=Guid.NewGuid(),Content="img02",Date = DateTime.UtcNow, UserId =u[1].Id,PhotoId =p[1].PhotoId  ,AlbumId=null},
-             new Comment {Id=Guid.NewGuid(),Content="img03",Date = DateTime.UtcNow, UserId =u[0].Id ,PhotoId =p[0].PhotoId  ,AlbumId=null}
-               };
-        }
         public Comment GetByIdAsync(Guid id)
         {
             var com = Comments.FirstOrDefault(c => c.Id == id);
@@ -59,7 +39,6 @@ namespace DatalagerTow.Repositories
         public void EditAsync(Comment comment)
         {
             var com = Comments.FirstOrDefault(c => c.Id == comment.Id);
-
         }
 
         public void InsertAsync(Comment comment)
@@ -71,6 +50,71 @@ namespace DatalagerTow.Repositories
         {
             var com = Comments.FirstOrDefault(c => c.Id == id);
             Comments.Remove(com);
+        }
+
+        private void SetupTemporaryUserData()
+        {
+            var user = new UserRepositories();
+            var u = user.GetAll();
+
+            var photo = new PhotoRepository();
+            var p = photo.GetAll();
+            var album = new AlbumRepository();
+            var a = album.GetAll();
+            Comments = new List<Comment>
+            {
+                new Comment
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "Album01",
+                    Date = DateTime.UtcNow,
+                    UserId = u[0].Id,
+                    PhotoId = null,
+                    AlbumId = a[0].AlbumId
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "img01",
+                    Date = DateTime.UtcNow,
+                    UserId = u[1].Id,
+                    PhotoId = p[0].PhotoId,
+                    AlbumId = null
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "Album02",
+                    Date = DateTime.UtcNow,
+                    UserId = u[0].Id,
+                    PhotoId = null,
+                    AlbumId = a[1].AlbumId
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "img02",
+                    Date = DateTime.UtcNow,
+                    UserId = u[1].Id,
+                    PhotoId = p[1].PhotoId,
+                    AlbumId = null
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "img03",
+                    Date = DateTime.UtcNow,
+                    UserId = u[0].Id,
+                    PhotoId = p[0].PhotoId,
+                    AlbumId = null
+                }
+            };
+        }
+
+        public List<Comment> GetCommentByAlbumId(Guid id)
+        {
+            var find = Comments.Where(p => p.AlbumId == id).ToList();
+            return find;
         }
     }
 }

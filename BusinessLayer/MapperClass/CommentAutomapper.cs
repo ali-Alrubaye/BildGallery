@@ -20,7 +20,12 @@ namespace BusinessLayer.MapperClass
             var randomComment = Mapper.Map<List<Comment>, IEnumerable<CommentViewModel>>(getData);
             return randomComment;
         }
-
+        public List<CommentViewModel> FromBltoUiGetCommentByAlbumId(Guid id)
+        {
+            var getData = _commentRepository.GetCommentByAlbumId(id).ToList();
+            var randomComment = Mapper.Map<List<Comment>, List<CommentViewModel>>(getData);
+            return randomComment;
+        }
         public CommentViewModel FromBltoUiGetById(Guid id)
         {
             var getRepo = _commentRepository.GetByIdAsync(id);

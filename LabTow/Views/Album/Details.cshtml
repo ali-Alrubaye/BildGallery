@@ -1,6 +1,11 @@
 ﻿@model BusinessLayer.Models.AlbumViewModel
 
 <h2>Albums Details</h2>
+<div id="loading" style="width: 100%; height: 100%; text-align: center;display:none">
+
+    <img src="~/Load/loading_logofinal.gif" />
+</div>
+<div class="DetailsAlbum">
 <div class="">
     <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
@@ -17,12 +22,16 @@
                     <th>Album Date</th>
                     <td>@Model.AlbumDate</td>
                 </tr>
+                <tr>
+                    <th>Photo Count</th>
+                    <td>@Model.PhotosAView.Count</td>
+                </tr>
             </table>
         </div>
     </div>
     <div class="row">
         @foreach (var item in Model.PhotosAView)
-            {
+        {
 
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <div class="thumbnail">
@@ -59,12 +68,17 @@
 
         }
     </div>
+    @*<div class="showPhotoList">
+        
+    </div>*@
+
 
 </div>
 <span>
     @*<a href="javascript:showingAlb()">Back to Gallery</a>*@
     @Html.ActionLink("Back to Gallery","Index","Album")
 </span>
+</div>
 <!-- End Main List -->
 <style>
     .thumbnail > .imglist {

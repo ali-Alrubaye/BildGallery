@@ -6,6 +6,7 @@
         <hr/>
         @Html.ValidationSummary(true, "", new {@class = "text-danger"})
         @Html.HiddenFor(model => model.PhotoId)
+    @Html.HiddenFor(model => model.AlbumId, new { id = "AlbId" })
         <div class="form-group">
             <div class="col-md-10" id="modalImg">
                 <img src="@Url.Content("~/GalleryImages/" + @Model.PhotoPath)" alt="@Model.PhotoPath" id="oldPath" value="@Model.PhotoPath" style="width: 400px; height: 300px"/>

@@ -15,16 +15,22 @@
                         <h4 class="">@item.AlbumName</h4>
                         <p class="">@item.Description </p>
                         <p class="">@item.AlbumDate </p>
+                        <p class="">@item.AlbumId </p>
                   
                         @*@Html.ActionLink("Details","Details","Album",new {@id=item.AlbumId}, null)*@
-                        <button type="button" id="@item.AlbumId" onclick="showAlbDetails(id)" class="btn btn-info">Details</button>
+                        <button type="button" id="@item.AlbumId" onclick="showAlbDetails(id)" class="btn btn-info">Mor Details</button>
 
                         <button type="button" id=@item.AlbumId class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="EditAlb(id)">
                             Edit
                         </button>
-
+                        <button type="button" id=@item.AlbumId class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="AddPhotoToAlbum()">
+                            AddPhotoToAlbum
+                        </button>
                         <button type="button" id=@item.AlbumId class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="DeleteAlb(id)">
                             Delete
+                        </button>
+                        <button type="button" id=@item.AlbumId class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="AddCommenttoAlb(id)">
+                            Add Comment
                         </button>
                         <div id="result" style="display: none;"></div>
                     </div>
