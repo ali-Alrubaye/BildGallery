@@ -1,7 +1,7 @@
 ﻿
 using AutoMapper;
-using BusinessLayer.Models;
-using DatalagerTow.Models;
+using BusinessLayers.Models;
+using Repositories.Models;
 
 namespace BusinessLayers.AutoMapper
 {

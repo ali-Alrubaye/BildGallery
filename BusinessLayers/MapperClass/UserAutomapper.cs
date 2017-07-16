@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
-using BusinessLayer.Models;
-using DatalagerTow.Models;
-using DatalagerTow.Repositories;
+using BusinessLayers.Models;
+using Repositories;
+using Repositories.Models;
+using Repositories.Repositories;
 
 namespace BusinessLayers.MapperClass
 {
     public class UserAutomapper
     {
-        UserRepositories _userRepositories = new UserRepositories();
+        UserRepository<User> _userRepositories = new UserRepository<User>(new BildGalleryContext());
 
         public IEnumerable<UserViewModel> FromBltoUiGetAll()
         {
@@ -19,40 +21,40 @@ namespace BusinessLayers.MapperClass
             return randomUser;
         }
 
-        public UserViewModel FromBltoUiGetById(Guid id)
+        public async Task<UserViewModel> FromBltoUiGetById(Guid id)
         {
-            var getRepo = _userRepositories.GetByIdAsync(id);
+            var getRepo = await _userRepositories.GetByIdAsync(id);
             var detailsId = Mapper.Map<User, UserViewModel>(getRepo);
             return detailsId;
         }
 
-        public void FromBltoUiInser(UserViewModel user)
+        public async Task FromBltoUiInser(UserViewModel user)
         {
             var addMap = Mapper.Map<UserViewModel, User>(user);
-            _userRepositories.InsertAsync(addMap);
+           await _userRepositories.InsertAsync(addMap);
 
         }
 
-        public void FromBltoUiEditAsync(UserViewModel user)
+        public async Task FromBltoUiEditAsync(UserViewModel user)
         {
             var editMap = Mapper.Map<UserViewModel, User>(user);
-            _userRepositories.EditAsync(editMap);
+           await _userRepositories.EditAsync(editMap);
 
         }
 
-        public void FromBltoUiDeleteAsync(Guid id)
+        public async Task FromBltoUiDeleteAsync(Guid id)
         {
-            var getFromR = _userRepositories.GetByIdAsync(id);
-            _userRepositories.DeleteAsync(getFromR.Id);
+            var getFromR = await _userRepositories.GetByIdAsync(id);
+             _userRepositories.DeleteAsync(getFromR);
 
         }
-        public UserViewModel FromBltoUiCheckUser(UserViewModel use)
-        {
-            var checkMap = Mapper.Map<UserViewModel, User>(use);
-            var user = _userRepositories.checkUserOPWD(checkMap);
+        //public async Task<UserViewModel> FromBltoUiCheckUser(UserViewModel use)
+        //{
+        //    var checkMap = Mapper.Map<UserViewModel, User>(use);
+        //    var user = await _userRepositories.checkUserOPWD(checkMap);
         
-            var returnValue = Mapper.Map<User, UserViewModel>(user);
-            return returnValue;
-        }
+        //    var returnValue = Mapper.Map<User, UserViewModel>(user);
+        //    return returnValue;
+        //}
     }
 }

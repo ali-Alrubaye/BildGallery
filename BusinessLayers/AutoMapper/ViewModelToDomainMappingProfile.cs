@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoMapper;
-using BusinessLayer.Models;
-using DatalagerTow.Models;
+using BusinessLayers.Models;
+using Repositories.Models;
 
-namespace BusinessLayer.AutoMapper
+namespace BusinessLayers.AutoMapper
 {
     public class ViewModelToDomainMappingProfile : Profile
     {
