@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLayer.MapperClass;
+using BusinessLayer.Models;
 
 namespace LabTow.Areas.Admin.Controllers
 {
@@ -23,7 +24,7 @@ namespace LabTow.Areas.Admin.Controllers
 
 
 
-            return View(list);
+            return View((IList<UserViewModel>) list);
         }
     }
 }
