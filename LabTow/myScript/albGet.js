@@ -73,8 +73,8 @@ function BacktoGallery() {
 //Function to Show add new Album .. Show in Poppup Modal....
 function CreateNAlbum() {
     $(".modal-body").removeAttr("id");
-    $(".modal-body").attr("id", "showCreate");
-    var div = $("#showCreate");
+    $(".modal-body").attr("id", "showCreateAlb");
+    var div = $("#showCreateAlb");
 
     $.ajax({
         url: "/Album/Create",

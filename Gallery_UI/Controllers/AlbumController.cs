@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using BusinessLayer.MapperClass;
-using BusinessLayer.Models;
+using BusinessLayers.MapperClass;
+using BusinessLayers.Models;
 
-namespace LabTow.Controllers
+namespace Gallery_UI.Controllers
 {
-    [Authorize]
     public class AlbumController : Controller
     {
         public AlbumController()
@@ -41,15 +41,15 @@ namespace LabTow.Controllers
 
 
         // GET: /Album/Details/5
-        public ActionResult Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             var r = AlbumAutomapper.FromBltoUiGetById(id);
             if (r == null)
                 return HttpNotFound();
-            var allpictur = PhotoAutomapper.FromBltoUiGetAllByAlbumId(id);
-            var allcomm = CommentAutomapper.FromBltoUiGetCommentByAlbumId(id);
-            r.PhotosAView = allpictur;
-            r.CommentsAView = allcomm;
+            //var allpictur = await PhotoAutomapper.FromBltoUiGetAllByAlbumId(id);
+            //var allcomm = await CommentAutomapper.FromBltoUiGetCommentByAlbumId(id);
+            //r.PhotosAView = allpictur;
+            //r.CommentsAView = allcomm;
             return PartialView("_DetailsAlbum", r);
             //return View(r);
         }
@@ -66,7 +66,7 @@ namespace LabTow.Controllers
         // POST: /Album/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(AlbumViewModel album)
+        public async Task<ActionResult> Create(AlbumViewModel album)
         {
             if (string.IsNullOrWhiteSpace(album.AlbumName))
                 return Json(new {status = 0, Message = "Namnet får inte vara tomt!"}, JsonRequestBehavior.AllowGet);
@@ -74,7 +74,7 @@ namespace LabTow.Controllers
                 return Json(new {status = 0, Message = "Description får inte vara tomt!"},
                     JsonRequestBehavior.AllowGet);
             album.AlbumId = Guid.NewGuid();
-            AlbumAutomapper.FromBltoUiInser(album);
+            await AlbumAutomapper.FromBltoUiInser(album);
             return Json(new {status = 1, Message = "Added Photo Success"});
         }
 
@@ -88,19 +88,19 @@ namespace LabTow.Controllers
 
 
         [HttpPost]
-        public ActionResult AddCom(AlbumViewModel album)
+        public async Task<ActionResult> AddCom(AlbumViewModel album)
         {
             if (ModelState.IsValid)
-                AlbumAutomapper.FromBltoUiEditAsync(album);
+                await AlbumAutomapper.FromBltoUiEditAsync(album);
             return RedirectToAction("Index");
         }
 
 
         // GET: /Album/Edit/5
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            var editMap = AlbumAutomapper.FromBltoUiGetById(id);
+            var editMap = await AlbumAutomapper.FromBltoUiGetById(id);
             if (editMap == null)
                 return HttpNotFound();
             return PartialView("_Edit", editMap);
@@ -110,18 +110,18 @@ namespace LabTow.Controllers
         // POST: /Album/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(AlbumViewModel album)
+        public async Task<ActionResult> Edit(AlbumViewModel album)
         {
             if (ModelState.IsValid)
-                AlbumAutomapper.FromBltoUiEditAsync(album);
+                await AlbumAutomapper.FromBltoUiEditAsync(album);
             return RedirectToAction("Index");
         }
 
 
         // GET: /Album/Delete/5
-        public ActionResult Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            var getFromR = AlbumAutomapper.FromBltoUiGetById(id);
+            var getFromR = await AlbumAutomapper.FromBltoUiGetById(id);
             if (getFromR == null)
                 return HttpNotFound();
             return PartialView("_Delete", getFromR);
@@ -131,9 +131,9 @@ namespace LabTow.Controllers
         // POST: /Album/Delete/5
         [HttpPost]
         [ActionName("Delete")]
-        public ActionResult DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            AlbumAutomapper.FromBltoUiDeleteAsync(id);
+            await AlbumAutomapper.FromBltoUiDeleteAsync(id);
             return RedirectToAction("Index");
         }
 
@@ -142,22 +142,22 @@ namespace LabTow.Controllers
         public ActionResult AddPhotoToAlbum()
         {
             var model = new AlbumPhoto();
-            model.Albums = AlbumAutomapper.FromBltoUiGetAll();
+            //model.Albums = AlbumAutomapper.FromBltoUiGetAll();
             model.Photos = PhotoAutomapper.FromBltoUiGetAll();
             return PartialView("_AddPhotoToAlbum", model);
         }
 
 
         [HttpPost]
-        public ActionResult AddPhotoToAlbum(IEnumerable<Guid> photo, Guid albumId)
+        public async Task<ActionResult> AddPhotoToAlbum(IEnumerable<Guid> photo, Guid albumId)
         {
-            var album = AlbumAutomapper.FromBltoUiGetById(albumId);
+            var album = await AlbumAutomapper.FromBltoUiGetById(albumId);
             foreach (var item in photo)
             {
-                var p = PhotoAutomapper.FromBltoUiGetById(item);
+                var p = await PhotoAutomapper.FromBltoUiGetById(item);
                 //album.PhotosAView.Add(p);
                 p.AlbumId = albumId;
-                PhotoAutomapper.FromBltoUiInser(p);
+                await PhotoAutomapper.FromBltoUiInser(p);
             }
             return Content("OK!");
         }

@@ -1,0 +1,65 @@
+﻿@model BusinessLayer.Models.PhotoViewModel
+
+@using (Html.BeginForm("Create", "Photo", FormMethod.Post, new { enctype = "multipart/form-data", @id = "myFormPhoto", @class = "form-horizontal", role = "form" }))
+{
+    
+        @Html.AntiForgeryToken()
+
+        <h4>Add New Photo</h4>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhotoName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PhotoName, new { htmlAttributes = new { @id = "txtName", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PhotoName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhotoDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PhotoDate, new { htmlAttributes = new { @id = "txtDate", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PhotoDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "txtDesc", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhotoPath, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.fileBase, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.TextBoxFor(m => m.PhotoPath, new { type = "file", name = "UploadFile", id = "txtUploadFile", enctype = "multipart/form-data" })
+                @Html.ValidationMessageFor(model => model.PhotoPath, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumId, "AlbumId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AlbumId", ViewBag.AlbumId as SelectList, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AlbumId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @*<input type="submit" value="Create" class="btn btn-default" />*@
+            <button type="submit" id="btnSavePhotoC" name="btnSavePhotoC" value="Create" class="btn btn-primary" style="margin-left: 5px;">Create</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+
+}
+
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryunobtrusive")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/myScript/GallerSecript")

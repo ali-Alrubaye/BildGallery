@@ -1,10 +1,10 @@
-﻿
+﻿using LabTow;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 
-[assembly: OwinStartup(typeof(LabTow.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace LabTow
 {
@@ -20,10 +20,10 @@ namespace LabTow
             //    }
             //);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Authentication/Login")
-            }
+                {
+                    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                    LoginPath = new PathString("/Authentication/Login")
+                }
             );
         }
     }

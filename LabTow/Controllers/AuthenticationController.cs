@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLayer.MapperClass;
 using BusinessLayer.Models;
-
 
 namespace LabTow.Controllers
 {
     [AllowAnonymous]
     public class AuthenticationController : Controller
     {
-        public UserAutomapper UserAutomapper { get; set; }
         public AuthenticationController()
         {
             UserAutomapper = new UserAutomapper();
         }
+
+        public UserAutomapper UserAutomapper { get; set; }
 
         // GET: /Account/Login
         [AllowAnonymous]
@@ -29,6 +26,7 @@ namespace LabTow.Controllers
 
             return View();
         }
+
         // GET: Authentication
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -47,15 +45,8 @@ namespace LabTow.Controllers
             {
                 SetUpAuthCookie(user);
                 if (checkU)
-                {
-                    //return RedirectToAction("Index", "Admin");
-                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
-                }
-                else
-                {
-                    //return RedirectToAction("Index", "User", new { area = "User" });
-                    return RedirectToAction("List", "Photo");
-                }
+                    return RedirectToAction("Index", "Admin", new {area = "Admin"});
+                return RedirectToAction("Index", "Album");
             }
             /*
                         ModelState.AddModelError("", "Invalid email or passsword");
@@ -103,22 +94,22 @@ namespace LabTow.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
         private void SetUpAuthCookie(UserViewModel user)
         {
-
-            var identity = new ClaimsIdentity(new[] {
-                        new Claim(ClaimTypes.Name, user.UserN),
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Role, user.IsAdministrator ? "Admin" : "User")
-                        },
-                           "ApplicationCookie");
+            var identity = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserN),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.IsAdministrator ? "Admin" : "User")
+                },
+                "ApplicationCookie");
 
             var result = Request.GetOwinContext();
             var authManager = result.Authentication;
 
             authManager.SignIn(identity);
         }
-
     }
 }

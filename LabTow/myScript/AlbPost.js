@@ -4,16 +4,17 @@ $(document).ready(function() {
     //Create
     $("#btnSaveAlbumC").on("click",
         function(e) {
-            //debugger;
+            debugger;
             //$(this).submit(function() {});
 
-            //var form2= $("#myFormAlbum").serialize();
+            var form= $("#myFormAlbum");
             e.preventDefault();
+            var formdata = new FormData(form[0]);
             $.ajax({
                 method: "POST",
                 url: "/Album/Create",
                 cash: false,
-                data: new FormData(document.getElementsByTagName("form")[0]),
+                data: formdata,
                 dataType: "json",
                 success: function(data) {
                     if (data.status > 0) {

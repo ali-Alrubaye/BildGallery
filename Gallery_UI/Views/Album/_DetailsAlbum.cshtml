@@ -1,0 +1,101 @@
+﻿@model BusinessLayer.Models.AlbumViewModel
+
+
+<div id="loading" style="width: 100%; height: 100%; text-align: center;display:none">
+
+    <img src="~/Load/loading_logofinal.gif" />
+</div>
+<div class="DetailsAlbum">
+    <h2>Albums Details</h2>
+    <hr />
+    <div class="">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <table class="table">
+                    <tr class="info">
+                        <th>Album Name</th>
+                        <td>@Model.AlbumName</td>
+                    </tr>
+                    <tr>
+                        <th>Album Description</th>
+                        <td>@Model.Description</td>
+                    </tr>
+                    <tr class="info">
+                        <th>Album Date</th>
+                        <td>@Model.AlbumDate</td>
+                    </tr>
+                    <tr>
+                        <th>Album Comment</th>
+                        @foreach (var it in Model.CommentsAView)
+                        {
+                            <td>@it.Content</td>
+                        }
+                        
+                    </tr>
+                    <tr>
+                        <th>Photo Count</th>
+                        <td>@Model.PhotosAView.Count</td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var item in Model.PhotosAView)
+            {
+
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <div class="thumbnail">
+
+                        @*<a href="#" class="">*@
+                        <div class="caption">
+                            <h3>Photo Info.</h3>
+                            <p class="">@item.Description </p>
+                            <p class="">@item.PhotoDate </p>
+                            @*<button id="editbtn" class="btn btn-info" type="button">Edit</button>*@
+                            @*<button type="button" id=@item.AlbumId class="btn btn-info " data-toggle="modal" data-target="#myModal">Edit</button>*@
+                            <button type="button" id=@item.PhotoId class="btn btn-success" data-toggle="modal" data-target="#myModal2" onclick="AddCommenttoPhoto(id)">
+                                Add Comment
+                            </button>
+                            <button type="button" id=@item.PhotoId class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="EditPhoto(id)">
+                                Edit
+                            </button>
+                            <button type="button" id=@item.PhotoId class="btn btn-primary" data-toggle="modal" data-target="#myModal2" onclick="DetailsPhoto(id)">
+                                Details
+                            </button>
+                            <button type="button" id=@item.PhotoId class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="DeletePhoto(id)">
+                                Delete
+                            </button>
+
+                            @*<button id="@item.AlbumId" class="btn btn-danger" type="button" onclick="DeletePhoto44(id)">
+                                    Delete
+                                </button>*@
+                            <div id="result" style="display: none;"></div>
+                        </div>
+                        <img src="~/GalleryImages/@item.PhotoPath" alt="@item.PhotoName" class="imglist">
+                        @*</a>*@
+                    </div>
+                </div>
+
+            }
+        </div>
+        @*<div class="showPhotoList">
+
+            </div>*@
+
+
+    </div>
+    <span>
+        <a href="javascript:BacktoGallery()">Back to Gallery</a>
+        @*@Html.ActionLink("Back to Gallery","Index","Album")*@
+    </span>
+</div>
+<!-- End Main List -->
+<style>
+    .thumbnail > .imglist {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+

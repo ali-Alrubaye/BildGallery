@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using BusinessLayer.MapperClass;
-using BusinessLayer.Models;
+using BusinessLayers.MapperClass;
+using BusinessLayers.Models;
 
-namespace LabTow.Controllers
+namespace Gallery_UI.Controllers
 {
-    [Authorize]
     public class PhotoController : Controller
     {
         public PhotoController()
@@ -42,9 +42,9 @@ namespace LabTow.Controllers
         //
         // GET: /photo/Details/5
         [HttpGet]
-        public ActionResult Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
-            var r = _photoAutomapper.FromBltoUiGetById(id);
+            var r = await _photoAutomapper.FromBltoUiGetById(id);
             if (r == null)
                 return HttpNotFound();
             return PartialView("_Details", r);
@@ -64,7 +64,7 @@ namespace LabTow.Controllers
         // POST: /photo/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PhotoViewModel photo, HttpPostedFileBase photoPath)
+        public async Task<ActionResult> Create(PhotoViewModel photo, HttpPostedFileBase photoPath)
         {
             //Thread.Sleep(5000);
 
@@ -90,7 +90,7 @@ namespace LabTow.Controllers
             photo.PhotoPath = photoPath.FileName;
             photo.PhotoId = Guid.NewGuid();
             photo.PhotoDate = DateTime.UtcNow;
-            _photoAutomapper.FromBltoUiInser(photo);
+            await _photoAutomapper.FromBltoUiInser(photo);
 
             ViewBag.AlbumId =
                 new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId), "AlbumId",
@@ -102,9 +102,9 @@ namespace LabTow.Controllers
         //
         // GET: /photo/Edit/5
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            var editMap = _photoAutomapper.FromBltoUiGetById(id);
+            var editMap = await _photoAutomapper.FromBltoUiGetById(id);
             ViewBag.AlbumId =
                 new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == editMap.AlbumId),
                     "AlbumId", "AlbumName");
@@ -118,7 +118,7 @@ namespace LabTow.Controllers
         // POST: /photo/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(PhotoViewModel photo, HttpPostedFileBase photoPath)
+        public async Task<ActionResult> Edit(PhotoViewModel photo, HttpPostedFileBase photoPath)
         {
             var destination = Server.MapPath("~/GalleryImages/");
             if (photoPath != null && photoPath.ContentLength > 0)
@@ -132,7 +132,7 @@ namespace LabTow.Controllers
             }
             if (ModelState.IsValid)
             {
-                _photoAutomapper.FromBltoUiEditAsync(photo);
+                await _photoAutomapper.FromBltoUiEditAsync(photo);
                 ViewBag.AlbumId =
                     new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId),
                         "AlbumId", "AlbumName");
@@ -145,9 +145,9 @@ namespace LabTow.Controllers
         //
         // GET: /photo/Delete/5
         [HttpGet]
-        public ActionResult Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            var getFromR = _photoAutomapper.FromBltoUiGetById(id);
+            var getFromR = await _photoAutomapper.FromBltoUiGetById(id);
             if (getFromR == null)
                 return HttpNotFound();
             return PartialView("_Delete", getFromR);
@@ -157,9 +157,9 @@ namespace LabTow.Controllers
         // POST: /photo/Delete/5
         [HttpPost]
         [ActionName("Delete")]
-        public ActionResult DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            var deletpicture = _photoAutomapper.FromBltoUiGetById(id);
+            var deletpicture = await _photoAutomapper.FromBltoUiGetById(id);
             var destination = Server.MapPath("~/GalleryImages/" + deletpicture.PhotoPath);
             if (deletpicture.PhotoPath != null)
             {
@@ -167,13 +167,13 @@ namespace LabTow.Controllers
                 if (file.Exists)
                     file.Delete();
             }
-            _photoAutomapper.FromBltoUiDeleteAsync(id);
+            await _photoAutomapper.FromBltoUiDeleteAsync(id);
             return Json(new {Message = "Delete Photo Success"}, JsonRequestBehavior.AllowGet);
         }
 
-        private void RemoveOldFileIfExists(PhotoViewModel picture)
+        private async Task RemoveOldFileIfExists(PhotoViewModel picture)
         {
-            var oldpicture = _photoAutomapper.FromBltoUiGetById(picture.PhotoId);
+            var oldpicture = await _photoAutomapper.FromBltoUiGetById(picture.PhotoId);
             if (oldpicture.PhotoPath != picture.PhotoPath)
             {
                 var oldPhysicalPath = Request.MapPath(oldpicture.PhotoPath);

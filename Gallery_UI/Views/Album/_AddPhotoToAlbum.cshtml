@@ -1,0 +1,39 @@
+﻿@model BusinessLayer.Models.AlbumPhoto
+
+
+
+
+@using (Html.BeginForm("AddPhotoToAlbum", "Album", FormMethod.Post, new {@id= "myAddFormtoAlbum" }))
+{
+    <div class="row">
+
+
+        @foreach (var photo in Model.Photos)
+        {
+            <div class="col-lg-4 col-sm-12">
+
+
+                <img src="@Url.Content("~/GalleryImages/" + @photo.PhotoPath)" alt="Kan int hita bilden" width="200" height="200">
+                <input type="checkbox" id="checkbox" name="photo" value="@photo.PhotoId" />
+            </div>
+             }
+
+
+    </div>
+
+   
+        <div class="col-lg-4 col-sm-12">
+            <select name="albumId">
+                @foreach (var album in Model.Albums)
+               {
+                   <option value="@album.AlbumId">@album.AlbumName</option>
+                  
+              }
+                
+            </select>
+            <input type="submit" id="AddtPhotoToAlb" value="Add To Album" class="btn btn-default" />
+        </div>
+
+
+   }
+@Scripts.Render("~/myScript/GallerSecript")

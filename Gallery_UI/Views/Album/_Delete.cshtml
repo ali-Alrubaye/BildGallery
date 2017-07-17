@@ -1,0 +1,46 @@
+﻿
+
+@model BusinessLayer.Models.AlbumViewModel
+@{
+    ViewBag.Title = "Delete";
+}
+<h3>Delete</h3>
+@using (Html.BeginForm("Delete", "Album", FormMethod.Post, new { @id = "myDForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @*<h4>Album</h4>*@
+        <hr />
+        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+        @Html.HiddenFor(model => model.AlbumId, new { id = "Pid" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumName, new { htmlAttributes = new { @id = "txtName", @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlbumDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlbumDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+       <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="button" class="btn btn-default" value="Save" onclick="DeleteAlbum()"/>*@
+                <button type="submit" id="btnDeleteA" name="btnDeleteA" value="Delete" class="btn btn-primary" style="margin-left:5px;">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+@Scripts.Render("~/myScript/GallerSecript")
