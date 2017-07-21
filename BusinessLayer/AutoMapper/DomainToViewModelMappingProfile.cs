@@ -12,7 +12,7 @@ namespace BusinessLayer.AutoMapper
             get { return "ViewModelToDomainMappingProfile"; }
         }
 
-        protected override void Configure()
+        protected  void Configure()
         {
             CreateMap<Album, AlbumViewModel>()
                 .ForMember(dto => dto.PhotosAView, opt => opt.MapFrom(scr => scr.Photos))

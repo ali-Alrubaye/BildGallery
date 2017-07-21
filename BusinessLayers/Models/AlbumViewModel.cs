@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayers.Models
 {
@@ -12,8 +13,15 @@ namespace BusinessLayers.Models
 
         }
         public Guid AlbumId { get; set; }
+        [Required(ErrorMessage = "Namnet får inte vara tomt!")]
+        [Display(Name = "Album Name")]
+        [MaxLength(100)]
         public string AlbumName { get; set; }
+        [Required]
         public DateTime AlbumDate { get; set; }
+        [Required(ErrorMessage = "Description får inte vara tomt!")]
+        [Display(Name = "Descriptions")]
+        [MaxLength(500)]
         public string Description { get; set; }
 
         public Guid UserId { get; set; }

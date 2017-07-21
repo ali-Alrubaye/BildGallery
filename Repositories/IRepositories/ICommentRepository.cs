@@ -1,22 +1,24 @@
-﻿using System;
+﻿using Repositories.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Repositories.IRepositories
 {
-    public interface ICommentRepository<TEntity>
+    public interface ICommentRepository
     {
-        Task<TEntity> GetByIdAsync(Guid id);
+        Task<Comment> GetByIdAsync(Guid id);
 
-        IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<Comment> SearchFor(Expression<Func<Comment, bool>> predicate);
 
-        IQueryable<TEntity> GetAll();
+        Task<List<Comment>>  GetAll();
 
-        Task EditAsync(TEntity entity);
+        Task EditAsync(Comment entity);
 
-        Task InsertAsync(TEntity entity);
+        Task InsertAsync(Comment entity);
 
-        Task DeleteAsync(TEntity entity);
+        Task DeleteAsync(Comment entity);
     }
 }

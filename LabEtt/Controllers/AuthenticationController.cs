@@ -80,7 +80,7 @@ namespace LabEtt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(string username, string password, string email)
+        public ActionResult Register(string username, string password, string email)
         {
             var user = new AppUser
             {

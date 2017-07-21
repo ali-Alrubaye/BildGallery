@@ -9,10 +9,13 @@ namespace BusinessLayers.AutoMapper
     {
         public override string ProfileName
         {
-            get { return "ViewModelToDomainMappingProfile"; }
+            get { return "DomainToViewModelMappings"; }
         }
-
-        protected override void Configure()
+        public DomainToViewModelMappingProfile()
+        {
+            Configure();
+        }
+        protected void Configure()
         {
             CreateMap<Album, AlbumViewModel>()
                 .ForMember(dto => dto.PhotosAView, opt => opt.MapFrom(scr => scr.Photos))

@@ -7,23 +7,19 @@ namespace BusinessLayer.AutoMapper
 {
     public class ViewModelToDomainMappingProfile : Profile
     {
+        public override string ProfileName => "ViewModelToDomainMappingProfile";
 
-        public override string ProfileName
+        [Obsolete(
+            "Create a constructor and configure inside of your profile\'s constructor instead. Will be removed in 6.0")]
+        protected void Configure()
         {
-            get { return "ViewModelToDomainMappingProfile"; }
-        }
-
-        [Obsolete("Create a constructor and configure inside of your profile\'s constructor instead. Will be removed in 6.0")]
-        protected override void Configure()
-        {
-            
             CreateMap<AlbumViewModel, Album>()
                 .ForMember(dto => dto.Photos, opt => opt.MapFrom(scr => scr.PhotosAView))
                 .ForMember(dto => dto.Comments, opt => opt.MapFrom(scr => scr.CommentsAView))
                 .ForMember(dto => dto.User, opt => opt.MapFrom(scr => scr.UserAView));
             CreateMap<PhotoViewModel, Photo>()
-            .ForMember(dto => dto.Album, opt => opt.MapFrom(scr => scr.AlbumPView))
-            .ForMember(dto => dto.Comments, opt => opt.MapFrom(scr => scr.CommentsPView));
+                .ForMember(dto => dto.Album, opt => opt.MapFrom(scr => scr.AlbumPView))
+                .ForMember(dto => dto.Comments, opt => opt.MapFrom(scr => scr.CommentsPView));
             CreateMap<CommentViewModel, Comment>()
                 .ForMember(dto => dto.Photo, opt => opt.MapFrom(scr => scr.PhotoCView))
                 .ForMember(dto => dto.User, opt => opt.MapFrom(scr => scr.UserCView))

@@ -1,60 +1,86 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Repositories.IRepositories;
+using Repositories.Models;
 
 namespace Repositories
 {
-    public class AlbumRepository<TEntity> : IAlbumRepository<TEntity> where TEntity : class
+    public class AlbumRepository : IAlbumRepository
     {
-        protected DbSet<TEntity> DbSet;
-
-        private readonly DbContext _dbContext;
-
-        public AlbumRepository(DbContext dbContext)
+        public IEnumerable<Album> GetAll()
         {
-            _dbContext = dbContext;
-            DbSet = _dbContext.Set<TEntity>();
+            using (var ctx = new BildGalleryContext())
+            {
+                var getAll = ctx.Albums
+                    //.Include(u => u.User)
+                    .Include(c => c.Comments)
+                    .Include(p => p.Photos);
+                return  getAll.ToList();
+            }
         }
 
-        public AlbumRepository()
+        public async Task<Album> GetByIdAsync(Guid id)
         {
+            using (var ctx = new BildGalleryContext())
+            {
+                //var find = (from t in ctx.Albums
+                //            where t.AlbumId == id
+                //            select t).FirstOrDefaultAsync();
+                var find = ctx.Albums.Where(p => p.AlbumId == id)
+                        //.Include(p => p.User)
+                        .Include(p => p.Comments)
+                        .Include(p => p.Photos)
+                        .FirstOrDefaultAsync();
+
+                return await find;
+            }
         }
 
-        public IQueryable<TEntity> GetAll()
+        public IQueryable<Album> SearchFor(Expression<Func<Album, bool>> predicate)
         {
-            return DbSet;
+            using (var ctx = new BildGalleryContext())
+            {
+                var find = ctx.Albums.Where(predicate);
+                return find;
+            }
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task EditAsync(Album entity)
         {
-            return await DbSet.FindAsync(id);
+            using (var ctx = new BildGalleryContext())
+            {
+                var EA = ctx.Albums.FirstOrDefault(x => x.AlbumId == entity.AlbumId);
+                //EA.AlbumId = entity.AlbumId;
+                EA.AlbumName = entity.AlbumName;
+                EA.AlbumDate = entity.AlbumDate;
+                EA.Description = entity.Description;
+                
+                //ctx.Entry<Album>(entity).State = EntityState.Modified;
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate)
+        public async Task InsertAsync(Album entity)
         {
-            return DbSet.Where(predicate);
+            using (var ctx = new BildGalleryContext())
+            {
+                ctx.Entry(entity).State = EntityState.Added;
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public async Task EditAsync(TEntity entity)
+        public async Task DeleteAsync(Guid entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task InsertAsync(TEntity entity)
-        {
-
-            DbSet.Add(entity);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(TEntity entity)
-        {
-            DbSet.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            using (var ctx = new BildGalleryContext())
+            {
+                var p = ctx.Albums.FirstOrDefault(x => x.AlbumId == entity);
+                ctx.Albums.Remove(p);
+                await ctx.SaveChangesAsync();
+            }
         }
     }
 }

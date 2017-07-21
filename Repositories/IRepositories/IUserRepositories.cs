@@ -2,21 +2,24 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Repositories.Models;
+using System.Collections.Generic;
 
 namespace Repositories.IRepositories
 {
-    public interface IUserRepository<TEntity>
+    public interface IUserRepository
     {
-        Task<TEntity> GetByIdAsync(Guid id);
+        Task<User> GetByIdAsync(Guid id);
 
-        IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<User> SearchFor(Expression<Func<User, bool>> predicate);
 
-        IQueryable<TEntity> GetAll();
+        Task<List<User>> GetAll();
 
-        Task EditAsync(TEntity entity);
+        Task EditAsync(User entity);
 
-        Task InsertAsync(TEntity entity);
+        Task InsertAsync(User entity);
 
-        Task DeleteAsync(TEntity entity);
+        Task DeleteAsync(User entity);
+        Task<User> CheckUserOpwd(User entity);
     }
 }

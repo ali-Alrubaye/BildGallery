@@ -1,4 +1,4 @@
-﻿@model BusinessLayer.Models.AlbumViewModel
+﻿@model BusinessLayers.Models.AlbumViewModel
 
 @using (Html.BeginForm("Create", "Album", FormMethod.Post, new { id = "myFormAlbum", @class = "form-horizontal" }))
 {
@@ -44,6 +44,9 @@
    
 }
 
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryunobtrusive")
+@Scripts.Render("~/bundles/jqueryui")
 @Scripts.Render("~/myScript/GallerSecript")
 
 

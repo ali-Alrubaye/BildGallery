@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using Repositories.Models;
 
 namespace Repositories.IRepositories
 {
-    public interface IAlbumRepository<TEntity>
+    public interface IAlbumRepository
     {
+        Task<Album> GetByIdAsync(Guid id);
 
-        Task<TEntity> GetByIdAsync(Guid id);
+        IQueryable<Album> SearchFor(Expression<Func<Album, bool>> predicate);
 
-        IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<Album> GetAll();
 
-        IQueryable<TEntity> GetAll();
+        Task EditAsync(Album entity);
 
-        Task EditAsync(TEntity entity);
+        Task InsertAsync(Album entity);
 
-        Task InsertAsync(TEntity entity);
-
-        Task DeleteAsync(TEntity entity);
+        Task DeleteAsync(Guid entity);
+       
     }
 }

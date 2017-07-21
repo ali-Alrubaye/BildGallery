@@ -1,4 +1,4 @@
-﻿@model BusinessLayer.Models.PhotoViewModel
+﻿@model BusinessLayers.Models.PhotoViewModel
 @using (Html.BeginForm("Edit", "Photo", FormMethod.Post, new { enctype = "multipart/form-data", @id = "myEForm", @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()

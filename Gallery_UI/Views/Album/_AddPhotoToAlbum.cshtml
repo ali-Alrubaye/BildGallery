@@ -1,39 +1,50 @@
-﻿@model BusinessLayer.Models.AlbumPhoto
+﻿@*@model BusinessLayers.Models.PhotoViewModel*@
 
 
 
-
-@using (Html.BeginForm("AddPhotoToAlbum", "Album", FormMethod.Post, new {@id= "myAddFormtoAlbum" }))
+@using (Html.BeginForm("AddPhotoToAlbum", "Album", FormMethod.Post, new { @id = "AddFormtoAlbum", @class = "form-horizontal", role = "form" }))
 {
+    @Html.AntiForgeryToken()
+    <h4>Add Photo to Album</h4>
     <div class="row">
 
 
-        @foreach (var photo in Model.Photos)
+        @foreach (var photo in Model)
         {
             <div class="col-lg-4 col-sm-12">
-
-
+               
+                @*@Html.HiddenFor(photo => photo.)*@
                 <img src="@Url.Content("~/GalleryImages/" + @photo.PhotoPath)" alt="Kan int hita bilden" width="200" height="200">
                 <input type="checkbox" id="checkbox" name="photo" value="@photo.PhotoId" />
             </div>
-             }
+        }
 
 
+
+        @foreach (var i in Model)
+        {
+            <input id="addalbId" value="@i.AlbumId" name="AlbumId" style="display:none"/>
+        }
+
+        @*<div class="col-lg-4 col-sm-12">
+
+            <select name="albumId">
+            @foreach (var album in Model.Albums)
+                {*@
+                @*<input id="addalbId" value="@album.AlbumId" name="AlbumId" style="display:none"/>*@
+                    @*<option value="@album.AlbumId">@album.AlbumName</option>*@
+                
+            @*}
+
+            </select>
+           
+        </div>*@
+        <input type="submit" id="AddtPhotoToAlbbtn" value="AddToAlbum" class="btn btn-default" />
     </div>
 
-   
-        <div class="col-lg-4 col-sm-12">
-            <select name="albumId">
-                @foreach (var album in Model.Albums)
-               {
-                   <option value="@album.AlbumId">@album.AlbumName</option>
-                  
-              }
-                
-            </select>
-            <input type="submit" id="AddtPhotoToAlb" value="Add To Album" class="btn btn-default" />
-        </div>
+}
 
-
-   }
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryunobtrusive")
+@Scripts.Render("~/bundles/jqueryui")
 @Scripts.Render("~/myScript/GallerSecript")

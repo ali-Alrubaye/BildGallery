@@ -21,7 +21,7 @@ namespace LabTow
             //);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
                 {
-                    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                    AuthenticationType = "ApplicationCookie",
                     LoginPath = new PathString("/Authentication/Login")
                 }
             );

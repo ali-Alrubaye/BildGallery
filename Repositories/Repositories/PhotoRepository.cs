@@ -4,57 +4,103 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Repositories.IRepositories;
+using Repositories.Models;
+using System.Collections.Generic;
 
 namespace Repositories
 {
-    public class PhotoRepository<TEntity> : IPhotoRepository<TEntity> where TEntity : class
+    public class PhotoRepository : IPhotoRepository
     {
-        protected DbSet<TEntity> DbSet;
 
-        private readonly DbContext _dbContext;
 
-        public PhotoRepository(DbContext dbContext)
+        public async Task<List<Photo>> GetAll()
         {
-            _dbContext = dbContext;
-            DbSet = _dbContext.Set<TEntity>();
+            using (var ctx = new BildGalleryContext())
+            {
+                var p = ctx.Photos
+                    .Include(a => a.Album)
+                    .ToListAsync();
+                return await p;
+            }
         }
 
-        public PhotoRepository()
+        public async Task<Photo> GetByIdAsync(Guid id)
         {
+            using (var ctx = new BildGalleryContext())
+            {
+                var find = ctx.Photos.Where(p => p.PhotoId == id)
+                        .Include(p => p.Album)
+                        .Include(p => p.Comments)
+                        .FirstOrDefaultAsync();
+                return await find;
+            }
         }
 
-        public IQueryable<TEntity> GetAll()
+        public IQueryable<Photo> SearchFor(Expression<Func<Photo, bool>> predicate)
         {
-            return DbSet;
+            using (var ctx = new BildGalleryContext())
+            {
+                return ctx.Photos.Where(predicate);
+            }
+
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task EditoUpdateAsync(Photo entity)
         {
-            return await DbSet.FindAsync(id);
+            using (var ctx = new BildGalleryContext())
+            {
+                var updatePhoto = ctx.Photos.Where(p => p.PhotoId == entity.PhotoId)
+                        .Include(p => p.Comments)
+                        .Include(p => p.Album)
+                        .FirstOrDefault();
+                if (updatePhoto != null)
+                {
+                    updatePhoto.AlbumId = entity.AlbumId;
+                    updatePhoto.PhotoId = entity.PhotoId;
+                    updatePhoto.PhotoDate = entity.PhotoDate;
+                    updatePhoto.PhotoName = entity.PhotoName;
+                    updatePhoto.PhotoPath = entity.PhotoPath;
+                    updatePhoto.Description = entity.Description;
+                }
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate)
+        public async Task InsertAsync(Photo entity)
         {
-            return DbSet.Where(predicate);
+            using (var ctx = new BildGalleryContext())
+            {
+                var addPhoto = new Photo();
+                addPhoto.AlbumId = entity.AlbumId;
+                addPhoto.PhotoId = entity.PhotoId;
+                addPhoto.PhotoDate = entity.PhotoDate;
+                addPhoto.PhotoName = entity.PhotoName;
+                addPhoto.PhotoPath = entity.PhotoPath;
+                addPhoto.Description = entity.Description;
+                ctx.Photos.Add(addPhoto);
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public async Task EditAsync(TEntity entity)
+        public async Task DeleteAsync(Guid entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            using (var ctx = new BildGalleryContext())
+            {
+                var p = ctx.Photos.FirstOrDefault(x => x.PhotoId == entity);
+                ctx.Photos.Remove(p);
+                await ctx.SaveChangesAsync();
+            }
         }
-
-        public async Task InsertAsync(TEntity entity)
+        public async Task<List<Photo>> GetPhotoByAlbumIdAsync(Guid id)
         {
-
-            DbSet.Add(entity);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(TEntity entity)
-        {
-            DbSet.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            using (var ctx = new BildGalleryContext())
+            {
+                var find = ctx.Photos.Where(p => p.AlbumId == id)
+                        //.Include(p => p.User)
+                        //.Include(p => p.Comments)                        
+                        .ToListAsync();
+                return await find;
+            }
         }
     }
 }

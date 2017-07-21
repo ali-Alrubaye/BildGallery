@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using BusinessLayers.MapperClass;
 using BusinessLayers.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Gallery_UI.Controllers
 {
-    //todo idag
     public class CommentController : Controller
     {
         public CommentController()
@@ -33,17 +33,19 @@ namespace Gallery_UI.Controllers
         [HttpGet]
         public ActionResult List()
         {
-            var p = CommentAutomapper.FromBltoUiGetAll().OrderBy(x => x.Date);
+            var p = CommentAutomapper.FromBltoUiGetAll();
             return PartialView("_list", p);
         }
 
         //
         // GET: /Comment/Create
         [HttpGet]
-        public PartialViewResult CreateComment(Guid id)
+        public async Task<ActionResult> CreateComment(Guid id)
         {
+            
             var newComm = new CommentViewModel();
-            var alb = AlbumAutomapper.FromBltoUiGetById(id);
+            var alb = await AlbumAutomapper.FromBltoUiGetById(id);
+           
             newComm.AlbumId = id;
             newComm.AlbumCView = alb;
             return PartialView("_CreateComment", newComm);
@@ -57,13 +59,14 @@ namespace Gallery_UI.Controllers
         {
             //if (User.Identity.IsAuthenticated)
             //{
-            var identity = (ClaimsIdentity) User.Identity;
-            var usId = CommentAutomapper.FromBltoUiGetById(com.UserId);
+            var identity = HttpContext.User.Identity.GetUserId();
+            //var usId = CommentAutomapper.FromBltoUiGetById(com.UserId);
 
             //if (usId != null)
             //{
-            com.Date = DateTime.Now;
-            com.UserId = Guid.NewGuid();
+            com.Id =  Guid.NewGuid();
+            com.Date = DateTime.UtcNow;
+            com.UserId = new Guid(identity);
             com.AlbumId = com.AlbumId;
 
             await CommentAutomapper.FromBltoUiInser(com);

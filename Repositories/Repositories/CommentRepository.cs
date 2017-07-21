@@ -4,57 +4,79 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Repositories.IRepositories;
+using Repositories.Models;
+using System.Collections.Generic;
 
 namespace Repositories
 {
-    public class CommentRepository<TEntity> : ICommentRepository<TEntity> where TEntity : class
+    public class CommentRepository : ICommentRepository
     {
-        protected DbSet<TEntity> DbSet;
-
-        private readonly DbContext _dbContext;
-
-        public CommentRepository(DbContext dbContext)
-        {
-            _dbContext = dbContext;
-            DbSet = _dbContext.Set<TEntity>();
-        }
-
+       
         public CommentRepository()
         {
         }
 
-        public IQueryable<TEntity> GetAll()
+        public async Task<List<Comment>> GetAll()
         {
-            return DbSet;
+            using (var ctx = new BildGalleryContext())
+            {
+                var p = ctx.Comments
+                    .ToListAsync();
+                return await p;
+            }
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+
+        public async Task<Comment> GetByIdAsync(Guid id)
         {
-            return await DbSet.FindAsync(id);
+            using (var ctx = new BildGalleryContext())
+            {
+                var find = ctx.Comments.Where(p => p.Id == id)
+                        .FirstOrDefaultAsync();
+                return await find;
+            }
+
+        }
+        public IQueryable<Comment> SearchFor(Expression<Func<Comment, bool>> predicate)
+        {
+            using (var ctx = new BildGalleryContext())
+            {
+                return ctx.Comments.Where(predicate);
+            }
         }
 
-        public IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate)
+        public async Task EditAsync(Comment entity)
         {
-            return DbSet.Where(predicate);
+            using (var ctx = new BildGalleryContext())
+            {
+                ctx.Entry(entity).State = EntityState.Modified;
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public async Task EditAsync(TEntity entity)
+        public async Task InsertAsync(Comment entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            using (var ctx = new BildGalleryContext())
+            {
+                var insertComm = new Comment();
+                insertComm.Id = entity.Id;
+                insertComm.AlbumId = entity.AlbumId;
+                insertComm.UserId = entity.UserId;
+                insertComm.PhotoId = entity.PhotoId;
+                insertComm.Content = entity.Content;
+                insertComm.Date = entity.Date;
+                ctx.Comments.Add(insertComm);
+                await ctx.SaveChangesAsync();
+            }
         }
 
-        public async Task InsertAsync(TEntity entity)
+        public async Task DeleteAsync(Comment entity)
         {
-
-            DbSet.Add(entity);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(TEntity entity)
-        {
-            DbSet.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            using (var ctx = new BildGalleryContext())
+            {
+                ctx.Comments.Remove(entity);
+                await ctx.SaveChangesAsync();
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace BusinessLayers.Models
     {
         public UserViewModel()
         {
-            Id = Guid.NewGuid();
+            //Id = Guid.NewGuid();
             PhotosUView = new HashSet<PhotoViewModel>();
             CommentsUView = new HashSet<CommentViewModel>();
             AlbumsUView = new HashSet<AlbumViewModel>();

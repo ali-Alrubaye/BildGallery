@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
 using BusinessLayers.Models;
 using Repositories;
 using Repositories.Models;
+using BusinessLayers.AutoMapper;
+using AutoMapper;
 
 namespace BusinessLayers.MapperClass
 {
     public class CommentAutomapper
     {
        
-        CommentRepository<Comment> _commentRepository = new CommentRepository<Comment>(new BildGalleryContext());
-
-        public IEnumerable<CommentViewModel> FromBltoUiGetAll()
+        //CommentRepository<Comment> _commentRepository = new CommentRepository<Comment>(new BildGalleryContext());
+        private CommentRepository _commentRepository { get; set; }
+        public CommentAutomapper()
         {
-            var getData = _commentRepository.GetAll().ToList();
-            var randomComment = Mapper.Map<List<Comment>, IEnumerable<CommentViewModel>>(getData);
+            _commentRepository = new CommentRepository();
+        }
+        public async Task<List<CommentViewModel>> FromBltoUiGetAll()
+        {
+            var getData = await _commentRepository.GetAll();
+            var randomComment = Mapper.Map<List<Comment>, List<CommentViewModel>>(getData);
             return randomComment;
         }
         //public List<CommentViewModel> FromBltoUiGetCommentByAlbumId(Guid id)
@@ -37,14 +42,14 @@ namespace BusinessLayers.MapperClass
         public async Task FromBltoUiInser(CommentViewModel Comment)
         {
             var addMap = Mapper.Map<CommentViewModel, Comment>(Comment);
-           await _commentRepository.InsertAsync(addMap);
+            await _commentRepository.InsertAsync(addMap);
 
         }
 
         public async Task FromBltoUiEditAsync(CommentViewModel Comment)
         {
             var editMap = Mapper.Map<CommentViewModel, Comment>(Comment);
-           await _commentRepository.EditAsync(editMap);
+            await _commentRepository.EditAsync(editMap);
 
         }
 

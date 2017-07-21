@@ -7,7 +7,7 @@ namespace Repositories.Models
     {
         public User()
         {
-            Id = Guid.NewGuid();
+            //Id = Guid.NewGuid();
             Photos = new HashSet<Photo>();
             Comments = new HashSet<Comment>();
             Albums = new HashSet<Album>();

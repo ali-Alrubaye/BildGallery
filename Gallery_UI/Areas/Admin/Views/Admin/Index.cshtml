@@ -1,0 +1,65 @@
+﻿@model IList<BusinessLayers.Models.UserViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="jumbotron"><h2>Index</h2> </div>
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <h3>Info Om Users Som Finns I List</h3>
+
+            @foreach (var result in Model)
+            {
+                <div>
+                    <hr />
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => result.UserN)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => result.UserN)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => result.Email)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => result.Email)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => result.IsAdministrator)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => result.IsAdministrator)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => result.Pwd)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => result.Pwd)
+                        </dd>
+
+                    </dl>
+                </div>
+            }
+
+        </div>
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <div>
+                <h3>Antal Users I Listan : @Model.Count()</h3>
+
+            </div>
+        </div>
+    </div>
+</div>
+

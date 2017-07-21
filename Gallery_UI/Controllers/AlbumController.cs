@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BusinessLayers.MapperClass;
 using BusinessLayers.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Gallery_UI.Controllers
 {
@@ -15,11 +15,12 @@ namespace Gallery_UI.Controllers
             AlbumAutomapper = new AlbumAutomapper();
             PhotoAutomapper = new PhotoAutomapper();
             CommentAutomapper = new CommentAutomapper();
+            UserAutomapper = new UserAutomapper();
         }
 
         private AlbumAutomapper AlbumAutomapper { get; }
         private PhotoAutomapper PhotoAutomapper { get; }
-
+        private UserAutomapper UserAutomapper { get; }
         private CommentAutomapper CommentAutomapper { get; }
 
 
@@ -35,7 +36,7 @@ namespace Gallery_UI.Controllers
         [HttpGet]
         public ActionResult List()
         {
-            var p = AlbumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumDate);
+            var p =  AlbumAutomapper.FromBltoUiGetAll();
             return PartialView("_list", p);
         }
 
@@ -43,11 +44,11 @@ namespace Gallery_UI.Controllers
         // GET: /Album/Details/5
         public async Task<ActionResult> Details(Guid id)
         {
-            var r = AlbumAutomapper.FromBltoUiGetById(id);
+            var r = await AlbumAutomapper.FromBltoUiGetById(id);
             if (r == null)
                 return HttpNotFound();
             //var allpictur = await PhotoAutomapper.FromBltoUiGetAllByAlbumId(id);
-            //var allcomm = await CommentAutomapper.FromBltoUiGetCommentByAlbumId(id);
+            //var allcomm = await CommentAutomapper.FromBltoUiGetAll();
             //r.PhotosAView = allpictur;
             //r.CommentsAView = allcomm;
             return PartialView("_DetailsAlbum", r);
@@ -68,32 +69,36 @@ namespace Gallery_UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(AlbumViewModel album)
         {
+            var identity = HttpContext.User.Identity.GetUserId();
+
+
             if (string.IsNullOrWhiteSpace(album.AlbumName))
-                return Json(new {status = 0, Message = "Namnet får inte vara tomt!"}, JsonRequestBehavior.AllowGet);
+                return Json(new { status = 0, Message = "Namnet får inte vara tomt!" }, JsonRequestBehavior.AllowGet);
             if (string.IsNullOrWhiteSpace(album.Description))
-                return Json(new {status = 0, Message = "Description får inte vara tomt!"},
+                return Json(new { status = 0, Message = "Description får inte vara tomt!" },
                     JsonRequestBehavior.AllowGet);
             album.AlbumId = Guid.NewGuid();
+            album.UserId = new Guid(identity);
             await AlbumAutomapper.FromBltoUiInser(album);
-            return Json(new {status = 1, Message = "Added Photo Success"});
+            return Json(new { status = 1, Message = "Added Album Success" });
         }
 
-        [Authorize]
-        [HttpGet]
-        public ActionResult AddCom(Guid? id)
-        {
-            var comment = AlbumAutomapper.FromBltoUiGetById((Guid) id);
-            return PartialView("_AddCom", comment);
-        }
+        //[Authorize]
+        //[HttpGet]
+        //public ActionResult AddCom(Guid? id)
+        //{
+        //    var comment = AlbumAutomapper.FromBltoUiGetById((Guid) id);
+        //    return PartialView("_AddCom", comment);
+        //}
 
 
-        [HttpPost]
-        public async Task<ActionResult> AddCom(AlbumViewModel album)
-        {
-            if (ModelState.IsValid)
-                await AlbumAutomapper.FromBltoUiEditAsync(album);
-            return RedirectToAction("Index");
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> AddCom(AlbumViewModel album)
+        //{
+        //    if (ModelState.IsValid)
+        //        await AlbumAutomapper.FromBltoUiEditAsync(album);
+        //    return RedirectToAction("Index");
+        //}
 
 
         // GET: /Album/Edit/5
@@ -139,27 +144,46 @@ namespace Gallery_UI.Controllers
 
 
         [HttpGet]
-        public ActionResult AddPhotoToAlbum()
+        public async Task<ActionResult> AddPhotoToAlbum(Guid id)
         {
-            var model = new AlbumPhoto();
-            //model.Albums = AlbumAutomapper.FromBltoUiGetAll();
-            model.Photos = PhotoAutomapper.FromBltoUiGetAll();
+            var model = new List<PhotoViewModel>();
+            //model.Albums =  AlbumAutomapper.FromBltoUiGetAll();
+            //model.Photos = await PhotoAutomapper.FromBltoUiGetAll();
+            var t = await PhotoAutomapper.FromBltoUiGetAll();
+            foreach (var item in t)
+            {
+                if (item.AlbumId == null)
+                {
+                    var p = new PhotoViewModel()
+                    {
+                        AlbumId = id,
+                        PhotoId = item.PhotoId,
+                        PhotoPath = item.PhotoPath,
+
+                    };
+                    model.Add(p);
+                }
+            }
             return PartialView("_AddPhotoToAlbum", model);
         }
 
 
+
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhotoToAlbum(IEnumerable<Guid> photo, Guid albumId)
         {
-            var album = await AlbumAutomapper.FromBltoUiGetById(albumId);
+            if (photo == null)
+                return Json(new { status = 0, Message = "Du måste välja en Photo!" }, JsonRequestBehavior.AllowGet);
             foreach (var item in photo)
             {
                 var p = await PhotoAutomapper.FromBltoUiGetById(item);
-                //album.PhotosAView.Add(p);
+
                 p.AlbumId = albumId;
-                await PhotoAutomapper.FromBltoUiInser(p);
+                await PhotoAutomapper.FromBltoUiEditoUpdateAsync(p);
             }
-            return Content("OK!");
+            return Json(new { status = 1, Message = "Added Photo To Album Success" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -8,110 +8,110 @@ using BusinessLayers.Models;
 
 namespace Gallery_UI.Controllers
 {
-   
-        public class AuthenticationController : Controller
+    [AllowAnonymous]
+    public class AuthenticationController : Controller
+    {
+        public AuthenticationController()
         {
-            public AuthenticationController()
+            UserAutomapper = new UserAutomapper();
+        }
+
+        public UserAutomapper UserAutomapper { get; set; }
+
+        // GET: /Account/Login
+
+        [HttpGet]
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View();
+        }
+
+        // GET: Authentication
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(UserViewModel model)
+        {
+            var user = await UserAutomapper.FromBlotUiCheckUser(model);
+
+            //if (!ModelState.IsValid) //Checks if input fields have the correct format
+            //{
+            //    return View(model); //Returns the view with the input values so that the user doesn't have to retype again
+            //}
+            if (user == null) return View();
+
+            var checkU = user.IsAdministrator;
+            if (user != null)
             {
-                UserAutomapper = new UserAutomapper();
+                SetUpAuthCookie(user);
+                if (checkU)
+                    return RedirectToAction("Index", "Admin", new {area = "Admin"});
+                return RedirectToAction("Index", "Album");
             }
+            /*
+                        ModelState.AddModelError("", "Invalid email or passsword");
+            */
+            return RedirectToAction("Index", "Home");
+        }
 
-            public UserAutomapper UserAutomapper { get; set; }
+        public ActionResult Logout()
+        {
+            var ctx = Request.GetOwinContext();
+            var authManager = ctx.Authentication;
 
-            // GET: /Account/Login
-            [AllowAnonymous]
-            [HttpGet]
-            public ActionResult Login(string returnUrl)
+            authManager.SignOut("ApplicationCookie");
+            return RedirectToAction("Index", "Home");
+
+            //var authenticationManager = HttpContext.GetOwinContext().Authentication;
+
+            //authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            ////return RedirectToAction("Login");
+            ////FormsAuthentication.SignOut();
+            //return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(string username, string password, string email)
+        {
+           
+            var user = new UserViewModel
             {
-                ViewBag.ReturnUrl = returnUrl;
+                IsAdministrator = false,
+                Id = Guid.NewGuid(),
+                UserN = username,
+                Email = email,
+                Pwd = password
+            };
 
-                return View();
-            }
+            await UserAutomapper.FromBltoUiInser(user);
 
-            // GET: Authentication
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<ActionResult> Login(UserViewModel model)
-            {
-                var user =await UserAutomapper.FromBltoUiCheckUser(model);
 
-                //if (!ModelState.IsValid) //Checks if input fields have the correct format
-                //{
-                //    return View(model); //Returns the view with the input values so that the user doesn't have to retype again
-                //}
-                if (user == null) return View();
+            return RedirectToAction("Index", "Home");
+        }
 
-                var checkU = user.IsAdministrator;
-                if (user != null)
+        private void SetUpAuthCookie(UserViewModel user)
+        {
+            var identity = new ClaimsIdentity(new[]
                 {
-                    SetUpAuthCookie(user);
-                    if (checkU)
-                        return RedirectToAction("Index", "Admin", new { area = "Admin" });
-                    return RedirectToAction("Index", "Album");
-                }
-                /*
-                            ModelState.AddModelError("", "Invalid email or passsword");
-                */
-                return RedirectToAction("Index", "Home");
-            }
+                    new Claim(ClaimTypes.Name, user.UserN),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.IsAdministrator ? "Admin" : "User")
+                },
+                "ApplicationCookie");
 
-            public ActionResult Logout()
-            {
-                var ctx = Request.GetOwinContext();
-                var authManager = ctx.Authentication;
+            var result = Request.GetOwinContext();
+            var authManager = result.Authentication;
 
-                authManager.SignOut("ApplicationCookie");
-                return RedirectToAction("Index", "Home");
-
-                //var authenticationManager = HttpContext.GetOwinContext().Authentication;
-
-                //authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-
-                ////return RedirectToAction("Login");
-                ////FormsAuthentication.SignOut();
-                //return RedirectToAction("Index", "Home");
-            }
-
-            public ActionResult Register()
-            {
-                return View();
-            }
-
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<ActionResult> Register(string username, string password, string email)
-            {
-                var user = new UserViewModel
-                {
-                    IsAdministrator = false,
-                    Id = new Guid(),
-                    UserN = username,
-                    Email = email,
-                    Pwd = password
-                };
-
-               await UserAutomapper.FromBltoUiInser(user);
-
-
-                return RedirectToAction("Index", "Home");
-            }
-
-            private void SetUpAuthCookie(UserViewModel user)
-            {
-                var identity = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, user.UserN),
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Role, user.IsAdministrator ? "Admin" : "User")
-                    },
-                    "ApplicationCookie");
-
-                var result = Request.GetOwinContext();
-                var authManager = result.Authentication;
-
-                authManager.SignIn(identity);
-            }
-        
+            authManager.SignIn(identity);
+        }
     }
 }

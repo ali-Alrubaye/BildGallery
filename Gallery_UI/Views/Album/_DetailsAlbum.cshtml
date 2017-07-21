@@ -1,4 +1,4 @@
-﻿@model BusinessLayer.Models.AlbumViewModel
+﻿@model BusinessLayers.Models.AlbumViewModel
 
 
 <div id="loading" style="width: 100%; height: 100%; text-align: center;display:none">
@@ -24,20 +24,71 @@
                         <th>Album Date</th>
                         <td>@Model.AlbumDate</td>
                     </tr>
-                    <tr>
+                    @*<tr>
                         <th>Album Comment</th>
                         @foreach (var it in Model.CommentsAView)
                         {
                             <td>@it.Content</td>
                         }
                         
-                    </tr>
+                    </tr>*@
                     <tr>
                         <th>Photo Count</th>
                         <td>@Model.PhotosAView.Count</td>
                     </tr>
 
                 </table>
+            </div>
+            <div>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <div class="detailBox">
+                        <div class="titleBox">
+                            <label>Comment Box</label>
+                            @*<button type="button" class="close" aria-hidden="true">&times;</button>*@
+                        </div>
+                        <div class="commentBox">
+
+                            @*<p class="taskDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>*@
+                        </div>
+                        <div class="actionBox">
+                            <ul class="commentList">
+                                @foreach (var it in Model.CommentsAView)
+                                {
+                                    @*<td>@it.Content</td>*@
+                                    <li>
+                                        <div class="commenterImage">
+                                            @*<img src="@it.PhotoCView.PhotoPath" />*@
+                                            <div class="glyphicon glyphicon-envelope "></div>
+                                        </div>
+                                        <div class="commentText">
+                                            <p class="">@it.Content</p> <span class="date sub-text">@it.Date</span>
+
+                                        </div>
+                                        @*<div class="glyphicon glyphicon-remove"></div>*@
+                                    </li>
+                                }
+                                @*<li>
+                                    <div class="commenterImage">
+                                        <img src="http://placekitten.com/45/45" />
+                                    </div>
+                                    <div class="commentText">
+                                        <p class="">Hello this is a test comment and this comment is particularly very long and it goes on and on and on.</p> <span class="date sub-text">on March 5th, 2014</span>
+
+                                    </div>
+                                </li>*@
+                         
+                            </ul>
+                            @*<form class="form-inline" role="form">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" placeholder="Your comments" />
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-default">Add</button>
+                                </div>
+                            </form>*@
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">

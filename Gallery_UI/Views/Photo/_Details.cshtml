@@ -1,8 +1,8 @@
-﻿@model BusinessLayer.Models.PhotoViewModel
+﻿@model BusinessLayers.Models.PhotoViewModel
 @using (Html.BeginForm("Details", "Photo", FormMethod.Post, new { @id = "myDetailsForm" }))
 {
     <div class="form-horizontal">
-        <h4>Edit photo</h4>
+        <h4>Details photo</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PhotoId)

@@ -32,9 +32,9 @@ namespace Gallery_UI.Controllers
         }
 
         [HttpGet]
-        public ActionResult List()
+        public async Task<ActionResult> List()
         {
-            var p = _photoAutomapper.FromBltoUiGetAll().OrderBy(x => x.PhotoDate);
+            var p =await _photoAutomapper.FromBltoUiGetAll();
 
             return PartialView("_list", p);
         }
@@ -55,8 +55,9 @@ namespace Gallery_UI.Controllers
         [HttpGet]
         public PartialViewResult Create()
         {
-            ViewBag.AlbumId = new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderByDescending(x => x.AlbumId),
-                "AlbumId", "AlbumName");
+            //var alb =  _albumAutomapper.FromBltoUiGetAll();
+            //ViewBag.AlbumId = new SelectList(alb.OrderByDescending(x => x.AlbumId), "AlbumId", "AlbumName");
+
             return PartialView("_CreatePhotos");
         }
 
@@ -67,7 +68,6 @@ namespace Gallery_UI.Controllers
         public async Task<ActionResult> Create(PhotoViewModel photo, HttpPostedFileBase photoPath)
         {
             //Thread.Sleep(5000);
-
             if (string.IsNullOrWhiteSpace(photo.PhotoName))
                 return Json(new {status = 0, Message = "Namnet får inte vara tomt!"}, JsonRequestBehavior.AllowGet);
             if (string.IsNullOrWhiteSpace(photo.Description))
@@ -92,9 +92,9 @@ namespace Gallery_UI.Controllers
             photo.PhotoDate = DateTime.UtcNow;
             await _photoAutomapper.FromBltoUiInser(photo);
 
-            ViewBag.AlbumId =
-                new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId), "AlbumId",
-                    "AlbumName");
+            //ViewBag.AlbumId =
+            //    new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId), "AlbumId",
+            //        "AlbumName");
 
             return Json(new {status = 1, Message = "Added Photo Success"});
         }
@@ -128,14 +128,14 @@ namespace Gallery_UI.Controllers
                 photo.PhotoPath = photoPath.FileName;
 
                 photo.PhotoDate = DateTime.UtcNow;
-                RemoveOldFileIfExists(photo);
+                await RemoveOldFileIfExists(photo);
             }
             if (ModelState.IsValid)
             {
-                await _photoAutomapper.FromBltoUiEditAsync(photo);
-                ViewBag.AlbumId =
-                    new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId),
-                        "AlbumId", "AlbumName");
+                await _photoAutomapper.FromBltoUiEditoUpdateAsync(photo);
+                //ViewBag.AlbumId =
+                //    new SelectList(_albumAutomapper.FromBltoUiGetAll().OrderBy(x => x.AlbumId == photo.PhotoId),
+                //        "AlbumId", "AlbumName");
                 return Json(new {status = 1, Message = "Edit Photo Success"});
             }
 
