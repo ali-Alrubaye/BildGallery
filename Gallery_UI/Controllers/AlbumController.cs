@@ -33,12 +33,12 @@ namespace Gallery_UI.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult List()
-        {
-            var p =  AlbumAutomapper.FromBltoUiGetAll();
-            return PartialView("_list", p);
-        }
+        //[HttpGet]
+        //public ActionResult List()
+        //{
+        //    var p =  AlbumAutomapper.FromBltoUiGetAll();
+        //    return PartialView("_list", p);
+        //}
 
 
         // GET: /Album/Details/5
